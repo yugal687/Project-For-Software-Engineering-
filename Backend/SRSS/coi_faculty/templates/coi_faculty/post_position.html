@@ -1,0 +1,7 @@
+<!-- C:\Users\simmo\Downloads\Project-For-Software-Engineering-\backend\SRSS\coi_faculty\templates\coi_faculty\post_position.html -->
+<h1>Post New Research Position</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Post</button>
+</form>
