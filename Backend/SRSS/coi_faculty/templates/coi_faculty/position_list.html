@@ -1,0 +1,8 @@
+<!-- C:\Users\simmo\Downloads\Project-For-Software-Engineering-\backend\SRSS\coi_faculty\templates\coi_faculty\position_list.html -->
+<h1>Research Positions</h1>
+<ul>
+{% for position in positions %}
+    <li>{{ position.title }}</li>
+{% endfor %}
+</ul>
+<a href="{% url 'post_position' %}">Post New Position</a>
