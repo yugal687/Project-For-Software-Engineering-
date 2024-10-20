@@ -1,0 +1,6 @@
+<h1>Browse Resumes</h1>
+<ul>
+{% for resume in resumes %}
+    <li><a href="{% url 'view_student_profile' resume.student.id %}">{{ resume.student.name }}</a></li>
+{% endfor %}
+</ul>
