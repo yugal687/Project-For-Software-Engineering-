@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis Results</title>
+</head>
+<body>
+    <h1>Analysis Results for "{{ input_text }}"</h1>
+
+    <h2>Tokens and Part-of-Speech Tags</h2>
+    <ul>
+        {% for token, pos in tokens %}
+        <li>{{ token }} - {{ pos }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Named Entities</h2>
+    <ul>
+        {% for entity, label in entities %}
+        <li>{{ entity }} - {{ label }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'analyze_text' %}">Analyze another text</a>
+</body>
+</html>
