@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
-function LoginPage() {
+function LoginPage({ Loginfor }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -15,7 +15,7 @@ function LoginPage() {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="card p-4 shadow-lg" style={{ width: "400px" }}>
-        <h3 className="text-center mb-4">Login</h3>
+        <h3 className="text-center mb-4">{Loginfor} Login</h3>
         <form onSubmit={handleLogin}>
           {/* Email Input */}
           <div className="mb-3">

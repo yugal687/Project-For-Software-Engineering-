@@ -4,7 +4,7 @@ import LoginPage from "@/components/LoginPage";
 function page({ Loginfor }) {
   return (
     <div>
-      <LoginPage Loginfor={"Student"} />
+      <LoginPage Loginfor={"Faculty"} />
     </div>
   );
 }
