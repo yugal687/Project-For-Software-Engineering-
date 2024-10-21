@@ -1,14 +1,10 @@
 import React from "react";
-import Dashboard from "@/components/facultyComponents";
+import Dashboard from "@/components/facultyComponents/FacultyDashboardLayout";
 
 const page = () => {
   return (
     <div>
       <Dashboard>
-        <div className="pt-3 pb-2 mb-3 border-bottom">
-          <h2>Student Dashboard</h2>
-        </div>
-
         {/* Profile Information */}
         <section className="mb-4">
           <h4>Profile Information</h4>

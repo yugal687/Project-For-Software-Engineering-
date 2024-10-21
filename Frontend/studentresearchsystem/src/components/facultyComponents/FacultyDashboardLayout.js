@@ -121,12 +121,12 @@ const FacultyDashboard = ({ children }) => {
             <ul className="nav flex-column">
               <li className="nav-item">
                 {" "}
-                <Link className="nav-link active" href="/student/dashboard">
+                <Link className="nav-link active" href="/faculty/dashboard">
                   <i className="bi bi-house-door"></i> Dashboard
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" href="/student/dashboard/profile">
+                <Link className="nav-link" href="/faculty/dashboard/profile">
                   <i className="bi bi-person"></i> Profile
                 </Link>
               </li>
