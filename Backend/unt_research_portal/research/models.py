@@ -10,7 +10,7 @@ class Student(models.Model):
         return self.user.username
 
 class Professor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='research_professor_profile', on_delete=models.CASCADE)
     department = models.CharField(max_length=100)
 
     def __str__(self):

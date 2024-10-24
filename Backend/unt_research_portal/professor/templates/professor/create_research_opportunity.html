@@ -1,0 +1,9 @@
+<h2>Create New Research Opportunity</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Opportunity</button>
+</form>
+
+<a href="{% url 'professor_dashboard' %}">Back to Dashboard</a>

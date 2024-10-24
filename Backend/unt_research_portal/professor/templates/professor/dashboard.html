@@ -1,0 +1,17 @@
+<h2>Welcome, {{ professor.title }} {{ professor.user.username }}</h2>
+<p>Department: {{ professor.department }}</p>
+<p>Office Location: {{ professor.office_location }}</p>
+<p>Phone Number: {{ professor.phone_number }}</p>
+<p>Research Interests: {{ professor.research_interest }}</p>
+<p>Posted Opportunities: {{ professor.posted_opportunities_count }}</p>
+
+<h3>Your Research Opportunities:</h3>
+<ul>
+    {% for opportunity in opportunities %}
+        <li>{{ opportunity.title }} - <a href="{% url 'update_research_opportunity' opportunity.id %}">Edit</a> | <a href="{% url 'delete_research_opportunity' opportunity.id %}">Delete</a></li>
+    {% empty %}
+        <p>No research opportunities posted yet.</p>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'create_research_opportunity' %}">Create New Research Opportunity</a>

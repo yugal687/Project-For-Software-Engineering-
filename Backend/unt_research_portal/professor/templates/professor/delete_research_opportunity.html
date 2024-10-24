@@ -1,0 +1,9 @@
+<h2>Delete Research Opportunity</h2>
+
+<p>Are you sure you want to delete the research opportunity "{{ opportunity.title }}"?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+    <a href="{% url 'list_research_opportunities' %}">Cancel</a>
+</form>

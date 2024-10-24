@@ -1,0 +1,18 @@
+<h2>Your Research Opportunities</h2>
+
+<ul>
+    {% for opportunity in opportunities %}
+        <li>
+            <strong>{{ opportunity.title }}</strong>: {{ opportunity.description }} <br>
+            Posted on: {{ opportunity.posted_on }} <br>
+            <a href="{% url 'update_research_opportunity' opportunity.id %}">Edit</a> | 
+            <a href="{% url 'delete_research_opportunity' opportunity.id %}">Delete</a>
+        </li>
+    {% empty %}
+        <li>No research opportunities found.</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'create_research_opportunity' %}">Create New Research Opportunity</a>
+<br>
+<a href="{% url 'professor_dashboard' %}">Back to Dashboard</a>
