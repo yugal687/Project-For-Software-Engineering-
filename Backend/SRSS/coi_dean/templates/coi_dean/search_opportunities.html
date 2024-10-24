@@ -1,0 +1,11 @@
+<h1>Search Research Opportunities</h1>
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="keyword" placeholder="Enter keyword">
+    <button type="submit">Search</button>
+</form>
+<ul>
+{% for opportunity in opportunities %}
+    <li>{{ opportunity.title }}</li>
+{% endfor %}
+</ul>

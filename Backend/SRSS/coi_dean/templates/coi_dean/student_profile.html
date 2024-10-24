@@ -1,0 +1,8 @@
+<h1>{{ student.name }}'s Profile</h1>
+<p>ATS Score: {{ student.ats_score }}</p>
+<h2>Research Opportunities</h2>
+<ul>
+{% for opportunity in research_opportunities %}
+    <li>{{ opportunity.title }}</li>
+{% endfor %}
+</ul>
