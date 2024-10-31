@@ -14,14 +14,23 @@ class Professor(models.Model):
     profile_picture = models.ImageField(upload_to='professors_pics/', null=True, blank=True)  # Profile picture upload
     publications = models.TextField(null=True, blank=True)  # List of publications
     posted_opportunities_count = models.IntegerField(default=0)  # Track the number of research opportunities posted
+    
+    
 
     def __str__(self):
-        return f"{self.title} {self.user.first_name} {self.user.last_name}"
+        return f"{self.title} {self.first_name} {self.last_name}"
 
     def increment_opportunity_count(self):
         """Call this method whenever a professor posts a new research opportunity."""
         self.posted_opportunities_count += 1
         self.save()
+
+    # @property
+    # def research_posts(self):
+    #     """Return all research opportunities created by this professor."""
+    #     return self.research_opportunities.all()
+
+   
 
 class ResearchOpportunity(models.Model):
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='research_opportunities')
@@ -34,6 +43,7 @@ class ResearchOpportunity(models.Model):
     research_tags = models.CharField(max_length=255, null=True, blank=True)  # Tags for the research (comma-separated)
     max_applications = models.IntegerField(default=10)  # Limit the number of applications
     current_applications = models.IntegerField(default=0)  # Track current applications
+    
 
     def __str__(self):
         return self.title

@@ -140,39 +140,52 @@ const DashboardLayout = ({ children }) => {
 
         <nav className="col-md-2 d-none d-md-block bg-light sidebar">
           <div className="position-sticky pt-3">
-            {" "}
+            {/* <button
+              data-mdb-button-init
+              data-mdb-toggle="sidenav"
+              data-mdb-target="#sidenav-1"
+              data-mdb-ripple-init
+              class="btn btn-primary"
+              aria-controls="#sidenav-1"
+              aria-haspopup="true"
+            >
+              <i class="fas fa-bars"></i>
+            </button>{" "} */}
             <ul className="nav flex-column">
-              <li className="nav-item">
+              <li className="nav-item active">
                 {" "}
                 <Link className="nav-link active" href="/student/dashboard">
                   <i className="bi bi-house-door"></i> Dashboard
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" href="/student/dashboard/profile">
+              <li className="nav-item text-dark">
+                <Link
+                  className="nav-link text-dark"
+                  href="/student/dashboard/profile"
+                >
                   <i className="bi bi-person"></i> Profile
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" href="#">
+                <Link className="nav-link text-dark" href="#">
                   <i className="bi bi-file-earmark-arrow-up"></i> Upload Resume
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className="nav-link"
+                  className="nav-link text-dark"
                   href="/student/dashboard/research-projects"
                 >
                   <i className="bi bi-person"></i> Research Searches
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" href="#">
+                <Link className="nav-link text-dark" href="#">
                   <i className="bi bi-person"></i> Opportunities Searches
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" href="#">
+                <Link className="nav-link text-dark" href="#">
                   <i className="bi bi-gear"></i> Settings
                 </Link>
               </li>

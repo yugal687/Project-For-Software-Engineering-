@@ -13,7 +13,11 @@ from . import views
 
 
 router = DefaultRouter()
-router.register('professor/', views.ProfessorView)
+router.register('professor', views.ProfessorView)
+router.register('professor/opportunity/create', views.ResearchOpportunityViewSet)
+# router.register('professor/<int: professor_id>/opportunity/create', views.ProfessorView.get_serializer_class)
+
+
 # urlpatterns = router.urls
 
 urlpatterns = [
@@ -22,7 +26,7 @@ urlpatterns = [
     
     # # Non-API routes
     # path('professor/', views.professor_dashboard, name='professor_dashboard'),  # Non-API professor dashboard
-    # path('professor/create/', views.create_professor_profile, name='create_professor_profile'),  # Non-API profile creation
+    # path('professor/opportunity/create/', views.create_professor_profile, name='create_professor_profile'),  # Non-API profile creation
 ]
 
 # urlpatterns = [

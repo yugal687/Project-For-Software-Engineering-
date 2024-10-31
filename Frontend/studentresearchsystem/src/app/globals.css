@@ -6,3 +6,9 @@
 .main-content {
   padding-top: 20px;
 }
+
+.active {
+  font-weight: bold;
+  color: white;
+  background-color: rgba(0, 106, 0, 1); /* Change this to whatever styling you want */
+}

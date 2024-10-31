@@ -9,6 +9,11 @@ class ProfessorView(viewsets.ModelViewSet):
     queryset = Professor.objects.all()
     serializer_class = ProfessorSerializer
 
+    # def get_serializer_class(self):
+    #     if self.action == 'retrieve':
+    #         return ProfessorDetailSerializer
+    #     return super().get_serializer_class()
+
 
 # @permission_classes([IsAuthenticated])
 class ResearchOpportunityViewSet(viewsets.ModelViewSet):

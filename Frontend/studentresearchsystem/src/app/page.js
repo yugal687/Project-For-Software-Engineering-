@@ -1,7 +1,30 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const Home = () => {
+// export async function getServerSideProps() {
+//   const res = await fetch("http://localhost:8000/api/professor/");
+//   const data = await res.json();
+
+//   return { props: { data } };
+// }
+
+const Home = async () => {
+  // const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const res = await fetch("http://localhost:8000/api/professor/");
+  const data = await res.json();
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await fetch("http://localhost:8000/api/professor/");
+  //     const result = await response.json();
+  //     setData(result);
+  //     setLoading(false);
+  //   };
+  //   console.log(data);
+  //   fetchData();
+  // }, []);
   return (
     <div className="landing-page">
       {/* Navigation */}
@@ -10,6 +33,11 @@ const Home = () => {
           <a className="navbar-brand" href="#">
             Student Research Hub
           </a>
+          <div>
+            {data.map((item) => {
+              <li key={item.id}>{item.first_name}</li>;
+            })}
+          </div>
           <button
             className="navbar-toggler"
             type="button"
