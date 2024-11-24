@@ -182,11 +182,11 @@ def process_all_postings(resume_path: str, postings_dir: str) -> List[Dict]:
 
 if __name__ == "__main__":
     # Use the actual resume from data directory
-    resume_path = "data/resumes/Sarah_Johnson_Resume.pdf"
+    resume_path = "../data/resumes/Sarah_Johnson_Resume.pdf"
 
     print("Processing resume and job postings...")
     try:
-        results = process_all_postings(resume_path, "data/job_postings")
+        results = process_all_postings(resume_path, "../data/job_postings")
 
         print("\nATS Analysis Results:")
         print("=" * 50)

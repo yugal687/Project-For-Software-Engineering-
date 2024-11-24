@@ -47,7 +47,7 @@ def process_resume(file_path):
     return keywords
 
 
-resume_path = "data/resumes/Sarah_Johnson_Resume.pdf"
+resume_path = "../data/resumes/Sarah_Johnson_Resume.pdf"
 keywords = process_resume(resume_path)
 keywords_array = np.array(keywords)
 print("Extracted Keywords:", keywords_array)
