@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'research',
     'professor',
     'rest_framework',
-    'corsheaders',
     'rest_framework_simplejwt',
 ]
 
