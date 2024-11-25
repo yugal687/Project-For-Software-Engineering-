@@ -13,7 +13,7 @@ from rest_framework import routers
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('research.urls')),
-    path('', include('professor.urls')),
+    path('api/professor/', include('professor.urls')),
 ]
 
 

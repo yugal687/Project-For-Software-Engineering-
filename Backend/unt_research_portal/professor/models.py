@@ -1,9 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User, Group
+# from django.contrib.auth.models import User
 from django.utils import timezone
+from django.contrib.auth.hashers import make_password, check_password
 
 class Professor(models.Model):
-    user = models.OneToOneField(Group, on_delete=models.CASCADE, related_name='professor_profile', default=1)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='professor_profile', default="")
+    email = models.EmailField(max_length=100, unique=True, default="", blank=False)
+    password = models.CharField(max_length=128)  # Store hashed passwords
     first_name = models.CharField(max_length=100, default="")
     last_name = models.CharField(max_length=100, default="")
     department = models.CharField(max_length=100)
@@ -17,12 +20,18 @@ class Professor(models.Model):
     
 
     def __str__(self):
-        return f"{self.title} {self.first_name} {self.last_name}"
+        return f"{self.title} {self.first_name} {self.last_name} ({self.email})"
 
     def increment_opportunity_count(self):
         """Call this method whenever a professor posts a new research opportunity."""
         self.posted_opportunities_count += 1
         self.save()
+    
+    # def set_password(self, raw_password):
+    #     self.password = make_password(raw_password)
+    
+    # def check_password(self, raw_password):
+    #     return check_password(raw_password, self.password)
 
     @property
     def research_posts(self):

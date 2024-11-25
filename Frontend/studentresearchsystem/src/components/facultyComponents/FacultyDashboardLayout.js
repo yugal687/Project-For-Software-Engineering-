@@ -107,11 +107,40 @@
 // };
 
 // export default Dashboard;
-
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const FacultyDashboard = ({ children }) => {
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        // Check if the user is authenticated
+        // const response = await axios.post(
+        //   "http://127.0.0.1:8000/api/professor/login/"
+        // );
+
+        if (response.status === 200) {
+          setUserData(response.data); // Load user data into state
+        }
+      } catch (err) {
+        console.error("Not authenticated:", err);
+        router.push("/faculty/login"); // Redirect to login if not authenticated
+      }
+    };
+
+    checkLoginStatus();
+  }, [router]);
+
+  if (!userData) {
+    return <p>Loading...</p>;
+  }
   return (
     <div className="container-fluid">
       <div className="row">

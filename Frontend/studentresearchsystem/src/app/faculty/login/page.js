@@ -1,10 +1,10 @@
 import React from "react";
-import LoginPage from "@/components/LoginPage";
+import FacultyLogin from "@/components/facultyComponents/FacultyLogin";
 
-function page({ Loginfor }) {
+function page({}) {
   return (
     <div>
-      <LoginPage Loginfor={"Faculty"} />
+      <FacultyLogin />
     </div>
   );
 }
