@@ -1,67 +1,78 @@
 "use client";
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const FacultyLogin = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
+  //   const pathname = usePathname();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  useEffect(() => {
+    // Prefetch the dashboard page
+    router.prefetch("/dashboard");
+  }, [router]);
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null);
 
-    try {
-      // Send login request
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/professor/login/",
-        formData
-      );
-
-      if (response.status === 200) {
-        // Redirect to dashboard
-        router.push("/faculty/dashboard");
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/professor/login/",
+      {
+        email,
+        password,
       }
-    } catch (err) {
-      console.error(err);
-      setError("Invalid email or password.");
+    );
+
+    if (response.status === 200) {
+      // Store user data in state or localStorage if needed
+      console.log(response);
+      router.push({
+        pathname: "faculty/dashboard",
+        query: { data: JSON.stringify(response.data) },
+      });
+    } else {
+      setError("Invalid credentials. Please try again.");
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
-      <h1>Professor Login</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email:
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <form onSubmit={handleLogin} style={{ maxWidth: "400px", width: "100%" }}>
+        <h2>Professor Login</h2>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <div>
+          <label>Email:</label>
           <input
             type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
+            style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
           />
-        </label>
-        <br />
-        <label>
-          Password:
+        </div>
+        <div>
+          <label>Password:</label>
           <input
             type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
+            style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
           />
-        </label>
-        <br />
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit">Login</button>
+        </div>
+        <button type="submit" style={{ width: "100%", padding: "10px" }}>
+          Login
+        </button>
       </form>
     </div>
   );
