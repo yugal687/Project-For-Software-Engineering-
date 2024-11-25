@@ -28,6 +28,8 @@ urlpatterns = [
     # API routes
     path('', include(router.urls)),
     path('login/', views.ProfessorLoginView.as_view(), name='professor-login'),
+    # path('createlogin/', views.ProfessorLoginView.as_view(), name='professor-login'),
+
     # test
     # path('/', views.ProfessorView.as_view(), name='professor_view')
     # test
