@@ -1,11 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.utils import timezone
 
 class Professor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='professor_profile')
-    first_name = models.CharField(max_length=100, default="Unknown")
-    last_name = models.CharField(max_length=100, default="Unknown")
+    user = models.OneToOneField(Group, on_delete=models.CASCADE, related_name='professor_profile', default=1)
+    first_name = models.CharField(max_length=100, default="")
+    last_name = models.CharField(max_length=100, default="")
     department = models.CharField(max_length=100)
     title = models.CharField(max_length=50)  # e.g., Professor, Assistant Professor
     office_location = models.CharField(max_length=255, null=True, blank=True)
@@ -14,7 +14,6 @@ class Professor(models.Model):
     profile_picture = models.ImageField(upload_to='professors_pics/', null=True, blank=True)  # Profile picture upload
     publications = models.TextField(null=True, blank=True)  # List of publications
     posted_opportunities_count = models.IntegerField(default=0)  # Track the number of research opportunities posted
-    
     
 
     def __str__(self):
@@ -25,10 +24,10 @@ class Professor(models.Model):
         self.posted_opportunities_count += 1
         self.save()
 
-    # @property
-    # def research_posts(self):
-    #     """Return all research opportunities created by this professor."""
-    #     return self.research_opportunities.all()
+    @property
+    def research_posts(self):
+        """Return all research opportunities created by this professor."""
+        return self.research_opportunities.all()
 
    
 

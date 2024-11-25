@@ -13,9 +13,14 @@ from . import views
 
 
 router = DefaultRouter()
+#READ
 router.register('professor', views.ProfessorView)
+
+#Create
 router.register('professor/opportunity/create', views.ResearchOpportunityViewSet)
-# router.register('professor/<int: professor_id>/opportunity/create', views.ProfessorView.get_serializer_class)
+# router.register('professor/<int: professor_id>/opportunity/create', views.ResearchOpportunityViewSet)
+
+
 
 
 # urlpatterns = router.urls
@@ -23,6 +28,13 @@ router.register('professor/opportunity/create', views.ResearchOpportunityViewSet
 urlpatterns = [
     # API routes
     path('api/', include(router.urls)),
+
+    # test
+    # path('list-research-opportunities/', views.list_research_opportunities, name='list_research_opportunities'),
+    # path('create-research-opportunity/', views.create_research_opportunity, name='create_research_opportunity'),
+    # path('update-research-opportunity/<int:opportunity_id>/', views.update_research_opportunity, name='update_research_opportunity'),
+    # path('delete-research-opportunity/<int:opportunity_id>/', views.delete_research_opportunity, name='delete_research_opportunity'),
+    # test ends
     
     # # Non-API routes
     # path('professor/', views.professor_dashboard, name='professor_dashboard'),  # Non-API professor dashboard
