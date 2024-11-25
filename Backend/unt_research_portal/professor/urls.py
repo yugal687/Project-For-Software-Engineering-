@@ -24,11 +24,6 @@ router.register('professor/opportunity/create', views.ResearchOpportunityViewSet
 # router.register('api/professor/login/', views.ProfessorLoginView.as_view())
 
 
-
-
-
-# urlpatterns = router.urls
-
 urlpatterns = [
     # API routes
     path('api/', include(router.urls)),
