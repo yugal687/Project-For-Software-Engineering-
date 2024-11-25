@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Professor, ResearchOpportunity
-from .serializers import ProfessorSerializer, ResearchOpportunitySerializer
+from .models import Professor, ResearchOpportunity, Student_Application
+from .serializers import ProfessorSerializer, ResearchOpportunitySerializer, ApplicationSerializer
 # from rest_framework.permissions import IsAuthenticated
 # from rest_framework.decorators import permission_classes
 
@@ -27,6 +27,11 @@ class ProfessorView(viewsets.ModelViewSet):
 class ResearchOpportunityViewSet(viewsets.ModelViewSet):
     queryset = ResearchOpportunity.objects.all()
     serializer_class = ResearchOpportunitySerializer
+
+# test
+class ApplicationView(viewsets.ModelViewSet):
+    queryset = Student_Application.objects.all()
+    serializer_class = ApplicationSerializer
 
 
 # test

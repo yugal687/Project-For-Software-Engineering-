@@ -14,10 +14,10 @@ from . import views
 
 router = DefaultRouter()
 #READ
-router.register('professor/', views.ProfessorView)
+router.register('', views.ProfessorView)
 
 #Create
-router.register('professor/opportunity/create', views.ResearchOpportunityViewSet)
+router.register('opportunity/create', views.ResearchOpportunityViewSet)
 # router.register('professor/<int: professor_id>/opportunity/create', views.ResearchOpportunityViewSet)
 
 # test
@@ -26,8 +26,10 @@ router.register('professor/opportunity/create', views.ResearchOpportunityViewSet
 
 urlpatterns = [
     # API routes
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
     path('login/', views.ProfessorLoginView.as_view(), name='professor-login'),
+    # test
+    # path('/', views.ProfessorView.as_view(), name='professor_view')
     # test
     # path('list-research-opportunities/', views.list_research_opportunities, name='list_research_opportunities'),
     # path('create-research-opportunity/', views.create_research_opportunity, name='create_research_opportunity'),

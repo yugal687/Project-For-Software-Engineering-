@@ -3,6 +3,8 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password, check_password
 
+from students.models import Student
+
 class Professor(models.Model):
     # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='professor_profile', default="")
     email = models.EmailField(max_length=100, unique=True, default="", blank=False)
@@ -37,6 +39,8 @@ class Professor(models.Model):
     def research_posts(self):
         """Return all research opportunities created by this professor."""
         return self.research_opportunities.all()
+    
+    
 
    
 
@@ -51,6 +55,11 @@ class ResearchOpportunity(models.Model):
     research_tags = models.CharField(max_length=255, null=True, blank=True)  # Tags for the research (comma-separated)
     max_applications = models.IntegerField(default=10)  # Limit the number of applications
     current_applications = models.IntegerField(default=0)  # Track current applications
+
+    @property
+    def students_applied(self):
+        """Return all applications applied by this students."""
+        return self.applications.all()
     
 
     def __str__(self):
@@ -71,3 +80,12 @@ class ResearchOpportunity(models.Model):
     def tag_list(self):
         """Return the tags as a list."""
         return self.research_tags.split(",") if self.research_tags else []
+
+class Student_Application(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="applications")
+    research_opportunity = models.ForeignKey(ResearchOpportunity, on_delete=models.CASCADE, related_name="applications")
+    applied_at = models.DateTimeField(auto_now_add=True)
+    
+
+    def __str__(self):
+        return f"{self.student.first_name} {self.student.last_name} applied for {self.research_opportunity.title}"
