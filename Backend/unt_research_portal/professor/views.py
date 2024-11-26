@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from .serializers import ProfessorLoginSerializer
+from rest_framework.permissions import AllowAny
 
 
 # @permission_classes([IsAuthenticated])
@@ -76,3 +77,25 @@ class ProfessorLogoutView(APIView):
         if 'professor_id' in request.session:
             del request.session['professor_id']
         return Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
+    
+
+# # View for listing research opportunities
+# class ResearchOpportunityListView(APIView):
+#     permission_classes = [AllowAny]
+#     def get(self, request):
+#         opportunities = ResearchOpportunity.objects.all()
+#         serializer = ResearchOpportunitySerializer(opportunities, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+# # View for creating a new research opportunity
+# class ResearchOpportunityCreateView(APIView):
+#     # def get(self, request):
+#     #     # If you want to display a specific form message for creating
+#     #     return Response({"message": "Use POST to create a new research opportunity."}, status=status.HTTP_200_OK)
+
+#     def post(self, request):
+#         serializer = ResearchOpportunitySerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save(professor=request.user)  # Associate the logged-in professor if applicable
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

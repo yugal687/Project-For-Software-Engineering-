@@ -13,11 +13,14 @@ from . import views
 
 
 router = DefaultRouter()
+#Create
+router.register('opportunity', views.ResearchOpportunityViewSet)
 #READ
 router.register('', views.ProfessorView)
 
+
 #Create
-router.register('opportunity/create', views.ResearchOpportunityViewSet)
+
 # router.register('professor/<int: professor_id>/opportunity/create', views.ResearchOpportunityViewSet)
 
 # test
@@ -28,6 +31,7 @@ urlpatterns = [
     # API routes
     path('', include(router.urls)),
     path('login/', views.ProfessorLoginView.as_view(), name='professor-login'),
+
     # path('createlogin/', views.ProfessorLoginView.as_view(), name='professor-login'),
 
     # test
