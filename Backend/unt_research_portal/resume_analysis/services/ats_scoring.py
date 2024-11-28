@@ -2,86 +2,48 @@ import numpy as np
 from typing import List, Dict, Tuple
 import os
 import re
-from student_resume_analysis import process_resume  # Import Gaurav's function
+from student_resume_analysis import process_resume
+from job_opportunities_code import process_research_document
 
 
 class JobPostingProcessor:
     """
-    Temporary class to process job postings until Deepika's implementation is ready
+    Uses Deepika's implementation to process job postings
     """
-
     def __init__(self):
-        # Common keywords for each category
         self.keyword_categories = {
             "technical_skills": [
-                "python",
-                "data science",
-                "machine learning",
-                "ai",
-                "programming",
-                "software",
-                "analysis",
-                "research",
-                "algorithm",
-                "statistics",
-                "computer",
-                "nlp",
-                "database",
-                "sql",
-                "data mining",
-                "information retrieval",
-                "natural language processing",
-                "text mining",
+                "python", "data science", "machine learning", "ai", "programming",
+                "software", "analysis", "research", "algorithm", "statistics",
+                "computer", "nlp", "database", "sql", "data mining",
+                "information retrieval", "natural language processing", "text mining",
             ],
             "education": [
-                "phd",
-                "master",
-                "bachelor",
-                "degree",
-                "university",
-                "graduate",
-                "undergraduate",
-                "computer science",
-                "information science",
-                "data science",
+                "phd", "master", "bachelor", "degree", "university", "graduate",
+                "undergraduate", "computer science", "information science", "data science",
             ],
             "experience": [
-                "research",
-                "project",
-                "development",
-                "analysis",
-                "design",
-                "implementation",
-                "team",
-                "laboratory",
-                "publication",
+                "research", "project", "development", "analysis", "design",
+                "implementation", "team", "laboratory", "publication",
             ],
             "soft_skills": [
-                "communication",
-                "collaboration",
-                "team",
-                "problem solving",
-                "leadership",
-                "organization",
-                "management",
-                "independent",
+                "communication", "collaboration", "team", "problem solving",
+                "leadership", "organization", "management", "independent",
             ],
         }
 
-    def clean_text(self, text: str) -> str:
-        """Clean the text for processing"""
-        text = text.lower()
-        text = re.sub(r"[^\w\s]", " ", text)
-        return text
-
-    def extract_keywords(self, text: str) -> Dict[str, List[str]]:
+    def extract_keywords(self, text_path: str) -> Dict[str, List[str]]:
         """Extract keywords from text based on predefined categories"""
-        cleaned_text = self.clean_text(text)
+        # Use Deepika's function to get keywords
+        keywords = process_research_document(text_path)
+        
+        # Categorize keywords as before
         found_keywords = {category: [] for category in self.keyword_categories}
+        keywords_str = " ".join(keywords).lower()
 
-        for category, keywords in self.keyword_categories.items():
-            for keyword in keywords:
-                if keyword in cleaned_text:
+        for category, category_keywords in self.keyword_categories.items():
+            for keyword in category_keywords:
+                if keyword in keywords_str:
                     found_keywords[category].append(keyword)
 
         return found_keywords
@@ -115,10 +77,10 @@ class ATSScorer:
         return (matches / len(posting_keywords)) * 100 if posting_keywords else 0
 
     def calculate_ats_score(
-        self, resume_keywords: List[str], job_posting_text: str
+        self, resume_keywords: List[str], job_posting_path: str
     ) -> Tuple[float, Dict, List[str]]:
         """Calculate ATS score and provide recommendations"""
-        posting_keywords = self.job_processor.extract_keywords(job_posting_text)
+        posting_keywords = self.job_processor.extract_keywords(job_posting_path)
 
         scores = {}
         for category, weight in self.weights.items():
@@ -151,19 +113,17 @@ class ATSScorer:
 
 def process_all_postings(resume_path: str, postings_dir: str) -> List[Dict]:
     """Process all job postings and return sorted results"""
-    # Get keywords from resume using Gaurav's function
     resume_keywords = process_resume(resume_path)
 
     scorer = ATSScorer()
     results = []
 
     for filename in os.listdir(postings_dir):
-        if filename.endswith(".txt"):
-            with open(os.path.join(postings_dir, filename), "r", encoding="utf-8") as f:
-                posting_text = f.read()
+        if filename.endswith((".pdf", ".docx")):  # Only process PDF and DOCX files
+            posting_path = os.path.join(postings_dir, filename)
 
             score, detailed_scores, recommendations = scorer.calculate_ats_score(
-                resume_keywords, posting_text
+                resume_keywords, posting_path
             )
 
             results.append(
@@ -175,13 +135,11 @@ def process_all_postings(resume_path: str, postings_dir: str) -> List[Dict]:
                 }
             )
 
-    # Sort by overall score
     results.sort(key=lambda x: x["overall_score"], reverse=True)
     return results
 
 
 if __name__ == "__main__":
-    # Use the actual resume from data directory
     resume_path = "../data/resumes/Sarah_Johnson_Resume.pdf"
 
     print("Processing resume and job postings...")
