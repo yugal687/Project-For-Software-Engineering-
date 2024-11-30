@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from research import views
-from professor.views import ProfessorView
+# from professor.views import ProfessorView
 from rest_framework import routers 
 
 

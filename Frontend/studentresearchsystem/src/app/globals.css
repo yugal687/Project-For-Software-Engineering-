@@ -6,9 +6,17 @@
 .main-content {
   padding-top: 20px;
 }
-
+.primary-color{
+  color: #006a00
+}
+.primary-background{
+  background-color: #006a00;
+}
 .active {
   font-weight: bold;
-  color: white;
-  background-color: rgba(0, 106, 0, 1); /* Change this to whatever styling you want */
+  color: #006a00;
+  background-color: #fff; /* Change this to whatever styling you want */
+}
+.dash-nav{
+  border-left: 2px solid #fff;
 }

@@ -15,7 +15,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 from django.middleware.csrf import get_token
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Professor
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -250,34 +250,88 @@ class ApplicationView(viewsets.ModelViewSet):
 #         #     "data": serializer.data
 #         # })
 
+## professor login with session
+# class ProfessorLoginView(APIView):
+#     def post(self, request):
+#         email = request.data.get('email')
+#         password = request.data.get('password')
+
+#         if not email or not password:
+#             return Response({"error": "Email and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             # Validate email and password
+#             professor = Professor.objects.get(email=email)
+#             if professor.password != password:  # Replace with `check_password` if using hashed passwords
+#                 raise AuthenticationFailed("Invalid email or password")
+            
+#             # Store email in session (or generate token)
+#             request.session['professor_email'] = professor.email
+
+#             return Response({
+#                 "message": "Login successful",
+#                 "email": professor.email,
+#                 "name": f"{professor.first_name} {professor.last_name}",
+#             }, status=status.HTTP_200_OK)
+
+#         except Professor.DoesNotExist:
+#             return Response({"error": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+from .authentication import ProfessorBackend
+from django.shortcuts import redirect
+# test by new gpt code ()
 class ProfessorLoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        if not email or not password:
-            return Response({"error": "Email and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+        user = ProfessorBackend.authenticate(request, email=email, password=password)
 
-        try:
-            # Validate email and password
-            professor = Professor.objects.get(email=email)
-            if professor.password != password:  # Replace with `check_password` if using hashed passwords
-                raise AuthenticationFailed("Invalid email or password")
-            
-            # Store email in session (or generate token)
-            request.session['professor_email'] = professor.email
-
+        if user:
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
             return Response({
-                "message": "Login successful",
-                "email": professor.email,
-                "name": f"{professor.first_name} {professor.last_name}",
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': {
+                    'email': user.email,
+                    'name': user.first_name,
+                },
+                'id': user.id,
+                
             }, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+# test ny new gpt code ends
 
-        except Professor.DoesNotExist:
-            return Response({"error": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
+from django.contrib.auth import get_user_model
 
+def get_professor_profile(request):
+    user_id = request.session.get('_auth_user_id')  # Session stores the user ID
+    user = request.user  # Automatically uses get_user to retrieve the user object
+    if user:
+        return JsonResponse({'email': user.id, 'data': user.email})
+    else:
+        return JsonResponse({'error': 'User not found'}, status=404)
+    
+    
+# from django.contrib.auth.decorators import login_required
 
+# # @login_required
+# def get_professor_profile(request):
+#     user = request.user  # Retrieves the authenticated user object
+#     if user.is_authenticated:  # Check if the user is authenticated
+#         return JsonResponse({'email': user.email, 'name': user.first_name})
+#     else:
+#         return JsonResponse({'error': 'User not found'}, status=404)
 
+# class ProfessorProfileView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         serializer = ProfessorSerializer(request.user)
+#         return Response(serializer.data)
 
 
 class ProfessorDashboardAPIView(APIView):

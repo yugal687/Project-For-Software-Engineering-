@@ -66,6 +66,11 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend for superadmin
+    'professor.authentication.ProfessorBackend',    # Custom backend for professors
+]
+# AUTH_USER_MODEL = 'professor.Professor'
 ROOT_URLCONF = 'unt_research_portal.urls'
 
 TEMPLATES = [

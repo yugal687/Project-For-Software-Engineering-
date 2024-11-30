@@ -1,10 +1,14 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Dashboard from "@/components/facultyComponents/FacultyDashboardLayout";
+import Link from "next/link";
+import { useRouter, usePathname, useParams } from "next/navigation";
+import axios from "axios";
 
-const page = () => {
+const page = ({ data }) => {
   return (
     <div>
-      <Dashboard>
+      <Dashboard data={data}>
         {/* Profile Information */}
         <section className="mb-4">
           <h4>Profile Information</h4>
@@ -12,13 +16,13 @@ const page = () => {
             <div className="row">
               <div className="col-md-6">
                 <p>
-                  <strong>Name:</strong> James Bond
+                  <strong>Name:</strong> {data.first_name} {data.last_name}
                 </p>
                 <p>
-                  <strong>Email:</strong> johndoe@example.com
+                  <strong>Email:</strong> {data.email}
                 </p>
                 <p>
-                  <strong>Major:</strong> Computer Science
+                  <strong>Major:</strong> {data.department}
                 </p>
               </div>
               <div className="col-md-6">
@@ -38,25 +42,7 @@ const page = () => {
 
         {/* Resume Upload */}
         <section className="mb-4">
-          <h4>Upload Your Resume</h4>
-          <div className="card p-3">
-            <form>
-              <div className="mb-3">
-                <label htmlFor="resumeUpload" className="form-label">
-                  Select resume file (PDF or DOCX):
-                </label>
-                <input
-                  className="form-control"
-                  type="file"
-                  id="resumeUpload"
-                  accept=".pdf,.doc,.docx"
-                />
-              </div>
-              <button type="submit" className="btn btn-primary">
-                Upload Resume
-              </button>
-            </form>
-          </div>
+          <h4>Posted Research</h4>
         </section>
       </Dashboard>
     </div>

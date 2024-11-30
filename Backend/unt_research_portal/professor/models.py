@@ -55,11 +55,11 @@ class Professor(models.Model):
         self.posted_opportunities_count += 1
         self.save()
     
-    # def set_password(self, raw_password):
-    #     self.password = make_password(raw_password)
+    def set_password(self, password):
+        self.password = make_password(password)
     
-    # def check_password(self, raw_password):
-    #     return check_password(raw_password, self.password)
+    def check_password(self, password):
+        return check_password(password, self.password)
 
     @property
     def research_posts(self):
@@ -111,6 +111,7 @@ class Student_Application(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="applications")
     research_opportunity = models.ForeignKey(ResearchOpportunity, on_delete=models.CASCADE, related_name="applications")
     applied_at = models.DateTimeField(auto_now_add=True)
+    
     
 
     def __str__(self):

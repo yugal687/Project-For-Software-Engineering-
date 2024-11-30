@@ -17,12 +17,7 @@ router = DefaultRouter()
 #Create
 router.register('opportunity', views.ResearchOpportunityViewSet)
 
-router.register('list', views.ProfessorView)
-
-
-
-
-
+router.register('', views.ProfessorView)
 
 # router.register('professor/<int: professor_id>/opportunity/create', views.ResearchOpportunityViewSet)
 
@@ -32,13 +27,19 @@ router.register('list', views.ProfessorView)
 
 urlpatterns = [
     # API routes
+
+    path('login/', views.ProfessorLoginView.as_view(), name='professor-login'),
+    # path('dashboard/', views.ProfessorProfileView.as_view(), name='detail'),
+    path('dashboard/', views.get_professor_profile, name='detail'),
+
+    # path('<pk>/', views.ProfessorView.as_view(), name="professor-detail"),
     path('', include(router.urls)),
-    path('login/', ProfessorLoginView.as_view(), name='professor-login'),
-    path('csrf/', views.csrf, name='csrf'),
+
+    # path('csrf/', views.csrf, name='csrf'),
     
     # test
-    path('dashboard/', ProfessorDashboardAPIView.as_view(), name='professor-dashboard'),
-    # path('/', views.ProfessorView.as_view(), name='dashboard'),
+    # path('dashboard/', views.ProfessorProfileView.as_view(), name='professor-dashboard'),
+    # path('dashboard/', views.ProfessorProfileView.as_view(), name='dashboard'),
 
     # path('opportunity', views.ResearchOpportunityViewSet.as_view({'get': 'list'}), name='opportunity'),
 
