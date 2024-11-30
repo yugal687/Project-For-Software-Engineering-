@@ -23,6 +23,13 @@ class ProfessorAdmin(admin.ModelAdmin):
               'publications', 'posted_opportunities_count')
     readonly_fields = ('posted_opportunities_count',)
 
+# test binod gpt
+# @admin.register(Professor)
+# class ProfessorAdmin(admin.ModelAdmin):
+#     list_display = ['user', 'department', 'phone_number', 'office_location']
+#     search_fields = ['user__first_name', 'user__last_name', 'department']
+# test ends
+
 admin.site.register(Professor, ProfessorAdmin)
 
 

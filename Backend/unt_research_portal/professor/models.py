@@ -1,12 +1,31 @@
 from django.db import models
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from unt_research_portal import settings
+
 
 from students.models import Student
 
+
+
+# class ProfessorManager(BaseUserManager):
+#     def create_professor(self, username, password=None, **extra_fields):
+#         if not username:
+#             raise ValueError('The Username must be set')
+#         professor = self.model(username=username, **extra_fields)
+#         professor.set_password(password)
+#         professor.save(using=self._db)
+#         return professor
+
+
+
 class Professor(models.Model):
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='professor_profile', default=1)
+    # username = models.CharField(max_length=255, unique=True, null=True)
     # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='professor_profile', default="")
+    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
     email = models.EmailField(max_length=100, unique=True, default="", blank=False)
     password = models.CharField(max_length=128)  # Store hashed passwords
     first_name = models.CharField(max_length=100, default="")
@@ -20,6 +39,13 @@ class Professor(models.Model):
     publications = models.TextField(null=True, blank=True)  # List of publications
     posted_opportunities_count = models.IntegerField(default=0)  # Track the number of research opportunities posted
     
+    # objects = ProfessorManager()
+    # USERNAME_FIELD = 'username'
+    # REQUIRED_FIELDS = ['first_name', 'last_name']
+
+    # USERNAME_FIELD = 'email'
+
+    # objects = ProfessorManager()
 
     def __str__(self):
         return f"{self.title} {self.first_name} {self.last_name} ({self.email})"
@@ -89,3 +115,8 @@ class Student_Application(models.Model):
 
     def __str__(self):
         return f"{self.student.first_name} {self.student.last_name} applied for {self.research_opportunity.title}"
+
+
+
+# hello
+# I am making a research portal using Djano rest framework with next js for university, so i have a professor model already as given above now I want to create authentication for professor also most importantly I want super admin as well that is made by django itself and I dont want to remove or override super admin and leave it as it is, and after making professor authentication checking email and password and then generate a token so that i can store  it in local storage and I want a dashboard  data which I can only get if professor is authenticated that to be shown in dashboard of the professor

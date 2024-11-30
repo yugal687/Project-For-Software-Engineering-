@@ -107,161 +107,215 @@
 // };
 
 // export default Dashboard;
-"use client";
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import axios from "axios";
 
-const FacultyDashboard = ({ children }) => {
-  const [userData, setUserData] = useState(null);
-  const [error, setError] = useState(null);
-  const router = useRouter();
+// "use client";
+// import React, { useEffect, useState } from "react";
+// import Link from "next/link";
+// import { useRouter, usePathname, useParams } from "next/navigation";
+// import axios from "axios";
+// // import { useSession } from "next-auth/react";
+
+// const FacultyDashboardLayout = ({ children }) => {
+//   const [data, setData] = useState(null);
+//   const [error, setError] = useState(null);
+//   const router = useRouter();
+//   const params = useParams();
+//   const [isLoading, setIsLoading] = useState(true);
+//   // const id = params.id;
+
+//   // const { data: session } = useSession();
+
+//   useEffect(() => {
+//     // console.log(session);
+//     const fetchData = async () => {
+//       setIsLoading(true);
+//       try {
+//         const response = await fetch(
+//           "http://127.0.0.1:8000/api/professor/dashboard/"
+//         );
+//         const data = await response;
+//         setData(data);
+//       } catch (error) {
+//         setError(error);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     fetchData();
+//   }, [router]);
+
+//   return (
+//     <div className="container-fluid">
+//       <div className="row">
+//         <nav className="col-md-2 d-none d-md-block bg-light sidebar">
+//           <div className="position-sticky pt-3">
+//             {" "}
+//             <ul className="nav flex-column">
+//               <li className="nav-item">
+//                 {" "}
+//                 <Link className="nav-link active" href="/faculty/dashboard">
+//                   <i className="bi bi-house-door"></i> Dashboard
+//                 </Link>
+//               </li>
+//               <li className="nav-item">
+//                 <Link className="nav-link" href="/faculty/dashboard/profile">
+//                   <i className="bi bi-person"></i> Profile
+//                 </Link>
+//               </li>
+//               <li className="nav-item">
+//                 <Link className="nav-link" href="#">
+//                   <i className="bi bi-file-earmark-arrow-up"></i> View
+//                   Applicants
+//                 </Link>
+//               </li>
+//               <li className="nav-item">
+//                 <Link
+//                   className="nav-link"
+//                   href="/student/dashboard/research-projects"
+//                 >
+//                   <i className="bi bi-person"></i> View My Research Posts
+//                 </Link>
+//               </li>
+
+//               <li className="nav-item">
+//                 <Link className="nav-link" href="#">
+//                   <i className="bi bi-gear"></i> Settings
+//                 </Link>
+//               </li>
+//             </ul>
+//           </div>
+//         </nav>
+
+//         {/* Main content area */}
+//         <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+//           <nav class="navbar navbar-light bg-light p-3">
+//             <div class="d-flex col-12 col-md-3 col-lg-2 mb-2 mb-lg-0 flex-wrap flex-md-nowrap justify-content-between">
+//               <a class="navbar-brand" href="#">
+//                 Faculty Dashboard
+//               </a>
+//               <button
+//                 class="navbar-toggler d-md-none collapsed mb-3"
+//                 type="button"
+//                 data-toggle="collapse"
+//                 data-target="#sidebar"
+//                 aria-controls="sidebar"
+//                 aria-expanded="false"
+//                 aria-label="Toggle navigation"
+//               >
+//                 <span class="navbar-toggler-icon"></span>
+//               </button>
+//             </div>
+//             <div class="col-12 col-md-4 col-lg-2">
+//               <input
+//                 class="form-control form-control-dark"
+//                 type="text"
+//                 placeholder="Search"
+//                 aria-label="Search"
+//               />
+//             </div>
+//             <div class="col-12 col-md-5 col-lg-8 d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
+//               <div class="mr-3 mt-1">
+//                 <a
+//                   class="github-button"
+//                   href="https://github.com/themesberg/simple-bootstrap-5-dashboard"
+//                   data-color-scheme="no-preference: dark; light: light; dark: light;"
+//                   data-icon="octicon-star"
+//                   data-size="large"
+//                   data-show-count="true"
+//                   aria-label="Star /themesberg/simple-bootstrap-5-dashboard"
+//                 >
+//                   Star
+//                 </a>
+//               </div>
+//               <div class="dropdown">
+//                 <button
+//                   class="btn btn-secondary dropdown-toggle"
+//                   type="button"
+//                   id="dropdownMenuButton"
+//                   data-toggle="dropdown"
+//                   aria-expanded="false"
+//                 >
+//                   Hello, John Doe
+//                 </button>
+//                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+//                   <li>
+//                     <a class="dropdown-item" href="#">
+//                       Settings
+//                     </a>
+//                   </li>
+//                   <li>
+//                     <a class="dropdown-item" href="#">
+//                       Messages
+//                     </a>
+//                   </li>
+//                   <li>
+//                     <a class="dropdown-item" href="#">
+//                       Sign out
+//                     </a>
+//                   </li>
+//                 </ul>
+//               </div>
+//             </div>
+//           </nav>
+//           <div className="pt-3 pb-2 mb-3 border-bottom">
+//             <h1 className="h2">Dashboard</h1>
+//           </div>
+//           {children}
+//         </main>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default FacultyDashboardLayout;
+
+"use client";
+import { useEffect, useState } from "react";
+
+export default function Dashboard() {
+  const [dashboardData, setDashboardData] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
+    const fetchDashboard = async () => {
       try {
-        // Check if the user is authenticated
-        // const response = await axios.post(
-        //   "http://127.0.0.1:8000/api/professor/login/"
-        // );
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/professor/dashboard/",
+          {
+            method: "GET",
+            credentials: "include", // Include session cookie
+          }
+        );
 
-        if (response.status === 200) {
-          setUserData(response.data); // Load user data into state
+        if (response.ok) {
+          const data = await response.json();
+          setDashboardData(data);
+        } else {
+          const errorData = await response.json();
+          setError(errorData.error || "Failed to fetch dashboard data");
         }
       } catch (err) {
-        console.error("Not authenticated:", err);
-        router.push("/faculty/login"); // Redirect to login if not authenticated
+        setError("Something went wrong");
       }
     };
 
-    checkLoginStatus();
-  }, [router]);
+    fetchDashboard();
+  }, []);
 
-  if (!userData) {
+  if (error) {
+    return <p style={{ color: "red" }}>{error}</p>;
+  }
+
+  if (!dashboardData) {
     return <p>Loading...</p>;
   }
+
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <nav className="col-md-2 d-none d-md-block bg-light sidebar">
-          <div className="position-sticky pt-3">
-            {" "}
-            <ul className="nav flex-column">
-              <li className="nav-item">
-                {" "}
-                <Link className="nav-link active" href="/faculty/dashboard">
-                  <i className="bi bi-house-door"></i> Dashboard
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" href="/faculty/dashboard/profile">
-                  <i className="bi bi-person"></i> Profile
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" href="#">
-                  <i className="bi bi-file-earmark-arrow-up"></i> View
-                  Applicants
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  href="/student/dashboard/research-projects"
-                >
-                  <i className="bi bi-person"></i> View My Research Posts
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link className="nav-link" href="#">
-                  <i className="bi bi-gear"></i> Settings
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </nav>
-
-        {/* Main content area */}
-        <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-          <nav class="navbar navbar-light bg-light p-3">
-            <div class="d-flex col-12 col-md-3 col-lg-2 mb-2 mb-lg-0 flex-wrap flex-md-nowrap justify-content-between">
-              <a class="navbar-brand" href="#">
-                Faculty Dashboard
-              </a>
-              <button
-                class="navbar-toggler d-md-none collapsed mb-3"
-                type="button"
-                data-toggle="collapse"
-                data-target="#sidebar"
-                aria-controls="sidebar"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span class="navbar-toggler-icon"></span>
-              </button>
-            </div>
-            <div class="col-12 col-md-4 col-lg-2">
-              <input
-                class="form-control form-control-dark"
-                type="text"
-                placeholder="Search"
-                aria-label="Search"
-              />
-            </div>
-            <div class="col-12 col-md-5 col-lg-8 d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
-              <div class="mr-3 mt-1">
-                <a
-                  class="github-button"
-                  href="https://github.com/themesberg/simple-bootstrap-5-dashboard"
-                  data-color-scheme="no-preference: dark; light: light; dark: light;"
-                  data-icon="octicon-star"
-                  data-size="large"
-                  data-show-count="true"
-                  aria-label="Star /themesberg/simple-bootstrap-5-dashboard"
-                >
-                  Star
-                </a>
-              </div>
-              <div class="dropdown">
-                <button
-                  class="btn btn-secondary dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Hello, John Doe
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      Settings
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      Messages
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      Sign out
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </nav>
-          <div className="pt-3 pb-2 mb-3 border-bottom">
-            <h1 className="h2">Dashboard</h1>
-          </div>
-          {children}
-        </main>
-      </div>
+    <div>
+      <h1>Dashboard</h1>
+      <p>Welcome, {dashboardData.professor_email}</p>
+      <pre>{JSON.stringify(dashboardData, null, 2)}</pre>
     </div>
   );
-};
-
-export default FacultyDashboard;
+}

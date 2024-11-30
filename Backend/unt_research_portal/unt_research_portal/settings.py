@@ -27,6 +27,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# test
+# SIMPLE_JWT = {
+#     # 'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+#     # 'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+#     'TOKEN_OBTAIN_SERIALIZER': 'professor.serializers.CustomTokenObtainPairSerializer',
+# }
+# test ends
+
 
 # Application definition
 
@@ -92,6 +101,8 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -112,20 +123,28 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
 }
 
+# AUTH_USER_MODEL = 'professor.Professor'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React frontend
     "http://127.0.0.1:3000",  # React frontend with IP
 ]
+# CORS_ALLOW_CREDENTIALS = True
 
 
 CORS_ALLOW_ALL_ORIGINS = True  # Use only during development; not for production
+
+# # Allow specific methods
+
 
 
 # Internationalization

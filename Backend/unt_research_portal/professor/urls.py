@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProfessorView, ResearchOpportunityViewSet
+from .views import ProfessorView, ResearchOpportunityViewSet, ProfessorLoginView, ProfessorDashboardAPIView
 from django.contrib import admin
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 from . import views
@@ -17,7 +17,7 @@ router = DefaultRouter()
 #Create
 router.register('opportunity', views.ResearchOpportunityViewSet)
 
-router.register('', views.ProfessorView)
+router.register('list', views.ProfessorView)
 
 
 
@@ -33,7 +33,13 @@ router.register('', views.ProfessorView)
 urlpatterns = [
     # API routes
     path('', include(router.urls)),
-    path('login/', views.ProfessorLoginView.as_view(), name='professor-login'),
+    path('login/', ProfessorLoginView.as_view(), name='professor-login'),
+    path('csrf/', views.csrf, name='csrf'),
+    
+    # test
+    path('dashboard/', ProfessorDashboardAPIView.as_view(), name='professor-dashboard'),
+    # path('/', views.ProfessorView.as_view(), name='dashboard'),
+
     # path('opportunity', views.ResearchOpportunityViewSet.as_view({'get': 'list'}), name='opportunity'),
 
     # path('createlogin/', views.ProfessorLoginView.as_view(), name='professor-login'),
@@ -66,3 +72,19 @@ urlpatterns = [
 #     # path('update-research-opportunity/<int:opportunity_id>/', views.update_research_opportunity, name='update_research_opportunity'),
 #     # path('delete-research-opportunity/<int:opportunity_id>/', views.delete_research_opportunity, name='delete_research_opportunity'),
 # ]
+
+
+
+# 
+# /professor/login(login-fetch)
+# email : 
+# password: 
+
+# response: Token -> Localstorage or session storage
+# front-> /dashboard
+
+
+# dashboard (fetch)
+# /professor/dashboard-detail
+# [is_authenticated]
+# response: Professor details

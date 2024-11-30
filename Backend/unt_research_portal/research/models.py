@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
     major = models.CharField(max_length=100)
     year = models.IntegerField()
 
@@ -10,7 +10,7 @@ class Student(models.Model):
         return self.user.username
 
 class Professor(models.Model):
-    user = models.OneToOneField(User, related_name='research_professor_profile', on_delete=models.CASCADE)
+    # user = models.OneToOneField(User, related_name='research_professor_profile', on_delete=models.CASCADE)
     department = models.CharField(max_length=100)
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Professor(models.Model):
 
 # COI Staff Model
 class COIStaff(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
     staff_role = models.CharField(max_length=100)
 
     def __str__(self):
@@ -27,7 +27,7 @@ class COIStaff(models.Model):
 
 # Super Admin Model
 class SuperAdmin(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username

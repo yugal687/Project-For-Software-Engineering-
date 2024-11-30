@@ -1,0 +1,178 @@
+from rest_framework import viewsets
+from .models import Professor, ResearchOpportunity, Student_Application
+from .serializers import ProfessorSerializer, ResearchOpportunitySerializer, ApplicationSerializer, ProfessorDashboardSerializer
+from rest_framework.permissions import IsAuthenticated
+# from rest_framework.decorators import permission_classes
+from rest_framework.decorators import action
+from rest_framework_simplejwt.tokens import RefreshToken
+# test
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from rest_framework.exceptions import AuthenticationFailed
+from .serializers import ProfessorLoginSerializer
+
+
+# @permission_classes([IsAuthenticated])
+class ProfessorView(viewsets.ModelViewSet):
+    queryset = Professor.objects.all()
+    serializer_class = ProfessorSerializer
+
+    # def get_serializer_class(self):
+    #     if self.action == 'retrieve':
+    #         return ProfessorDetailSerializer
+    #     return super().get_serializer_class()
+
+
+# @permission_classes([IsAuthenticated])
+class ResearchOpportunityViewSet(viewsets.ModelViewSet):
+    @action(detail=True, methods=['post'], url_path='apply', url_name='apply')
+    def apply(self, request, pk=None):
+        """
+        Custom action for students to apply for a research opportunity.
+        """
+        try:
+            # Retrieve the specific research opportunity
+            research_opportunity = ResearchOpportunity.objects.get(pk=pk)
+        except ResearchOpportunity.DoesNotExist:
+            return Response({"error": "Research opportunity not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the student has already applied
+        student = request.user  # Assuming the logged-in user is a student
+        if Student_Application.objects.filter(student=student, research_opportunity=research_opportunity).exists():
+            return Response({"error": "You have already applied for this opportunity"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate if the deadline has passed
+        if research_opportunity.has_passed_deadline():
+            return Response({"error": "The application deadline has passed"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a new application and link it to the research opportunity
+        application = Student_Application.objects.create(
+            student=student,
+            research_opportunity=research_opportunity,
+        )
+
+        # Increment application count on the research opportunity
+        research_opportunity.increment_application_count()
+
+        return Response(
+            {"message": "Application submitted successfully", "application_id": application.id},
+            status=status.HTTP_201_CREATED
+        )
+    queryset = ResearchOpportunity.objects.all()
+    serializer_class = ResearchOpportunitySerializer
+
+# test
+class ApplicationView(viewsets.ModelViewSet):
+    queryset = Student_Application.objects.all()
+    serializer_class = ApplicationSerializer
+
+
+# test from binod gpt
+class ProfessorLoginView(APIView):
+    
+    def post(self, request):
+    #     email = request.data.get('email')
+    #     password = request.data.get('password')
+
+    #     professor = Professor.objects.filter(email=email).first()
+
+    #     # serializer = ProfessorLoginSerializer(data=request.data)
+
+    #     if serializer.is_valid():
+    #         professor = serializer.validated_data
+    #         # test
+    #         # user = serializer.validated_data
+
+    #         # Generate JWT tokens
+    #         refresh = RefreshToken.for_user(professor)
+    #         # refresh = RefreshToken.for_user(professor)
+
+
+    #         return Response({
+    #             "access": str(refresh.access_token),
+    #             "refresh": str(refresh),
+                
+    #         }, status=status.HTTP_200_OK)
+
+            # test ends
+
+            # research_posts = ResearchOpportunitySerializer(many=True, read_only=True)
+            # research_posts = ResearchOpportunity.objects.filter(professor=professor).values(
+            #     'id', 'title', 'description', 'posted_on', 'deadline', 
+            #     'is_active', 'required_skills', 'research_tags', 
+            #     'max_applications', 'current_applications'
+            # )
+            # professor_data = {
+            #     "id": professor.id,
+            #     "first_name": professor.first_name,
+            #     "last_name": professor.last_name,
+            #     "email": professor.email,
+            #     "department": professor.department,
+            #     "title": professor.title,
+            #     "office_location": professor.office_location,
+            #     "phone_number": professor.phone_number,
+            #     "research_interests": professor.research_interests,
+            #     "profile_picture": professor.profile_picture.url if professor.profile_picture else None,
+            #     "publications": professor.publications,
+            #     "posted_opportunities_count": professor.posted_opportunities_count,
+            #     "research_posts": list(research_posts),
+            # }
+            # return Response({
+            #     "message": "Login successful",
+            #     "professor_id": professor.id,
+            #     "data" : professor_data,
+            #     "email": professor.email,
+            #     "first_name": professor.first_name,
+            #     "last_name": professor.last_name,
+            # }, status=status.HTTP_200_OK)
+
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
+    
+    # just test
+        email = request.data.get('email')
+        password = request.data.get('password')
+        
+        professor = Professor.objects.filter(email=email)
+        if professor and professor:
+            refresh = RefreshToken.for_user(professor)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            })
+        
+        return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+# test for professor dashboard data
+# class ProfessorDashboardView(APIView):
+#     """
+#     Dashboard view for authenticated professors.
+#     """
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         try:
+#             # professor = request.user  # JWT ensures the user is authenticated
+#             professor = Professor.objects.get(professor=request.user)
+#             serializer = ProfessorDashboardSerializer(professor)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         except Exception as e:
+
+#             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+class ProfessorDashboardAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        # Example of dashboard data
+        professor = request.user
+        return Response({
+            "message": f"Welcome, {professor.email}!",
+            "data": "Here is your dashboard data..."
+        })
+
+class ProfessorLogoutView(APIView):
+    def post(self, request):
+        if 'professor_id' in request.session:
+            del request.session['professor_id']
+        return Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
