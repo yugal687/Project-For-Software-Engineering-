@@ -1,7 +1,9 @@
 from django.db import models
+from rest_framework.viewsets import ModelViewSet
+
 # from django.contrib.auth.models import User
 from django.utils import timezone
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import make_password
 
 from students.models import Student
 
@@ -19,6 +21,12 @@ class Professor(models.Model):
     profile_picture = models.ImageField(upload_to='professors_pics/', null=True, blank=True)  # Profile picture upload
     publications = models.TextField(null=True, blank=True)  # List of publications
     posted_opportunities_count = models.IntegerField(default=0)  # Track the number of research opportunities posted
+    
+    def save(self, *args, **kwargs):
+        # Hash the password if it's not already hashed
+        if not self.password.startswith('pbkdf2_'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
     
 
     def __str__(self):
@@ -85,7 +93,11 @@ class Student_Application(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="applications")
     research_opportunity = models.ForeignKey(ResearchOpportunity, on_delete=models.CASCADE, related_name="applications")
     applied_at = models.DateTimeField(auto_now_add=True)
-    
+    status = models.CharField(
+        max_length=20,
+        choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')],
+        default='pending'
+    )
 
     def __str__(self):
         return f"{self.student.first_name} {self.student.last_name} applied for {self.research_opportunity.title}"

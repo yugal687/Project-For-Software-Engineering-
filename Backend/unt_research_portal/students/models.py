@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password
+
 
 # Create your models here.
 class Student(models.Model):
@@ -21,6 +23,12 @@ class Student(models.Model):
     github_profile = models.URLField(null=True, blank=True)  # GitHub profile link
     # created_at = models.DateTimeField(auto_now_add=True, default="")  # Account creation date
     # updated_at = models.DateTimeField(auto_now=True, default="")  # Last profile update
+    
+    def save(self, *args, **kwargs):
+        # Hash the password if it's not already hashed
+        if not self.password.startswith('pbkdf2_'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}  ({self.email})"

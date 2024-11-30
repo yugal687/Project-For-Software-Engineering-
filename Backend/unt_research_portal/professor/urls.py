@@ -4,6 +4,9 @@ from .views import ProfessorView, ResearchOpportunityViewSet
 from django.contrib import admin
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 from . import views
+from .views import ProfessorLoginView, ProfessorDashboardView, CSRFTokenView, ApplyResearchOpportunityView, ManageApplicationsView
+
+
 
 # router = DefaultRouter()
 # router.register(r'professors', ProfessorViewSet, "professor")
@@ -12,11 +15,27 @@ from . import views
 # urlpatterns = router.urls
 
 
+# router = DefaultRouter()
+# #Create
+# router.register('opportunity', views.ResearchOpportunityViewSet)
+# #READ
+# router.register('', views.ProfessorView)
+
+# Using Session 
 router = DefaultRouter()
-#Create
-router.register('opportunity', views.ResearchOpportunityViewSet)
-#READ
-router.register('', views.ProfessorView)
+router.register('opportunity', views.ResearchOpportunityViewSet)  # Register opportunities
+router.register('list', views.ProfessorView)  # Distinguish from 'login/'
+
+
+urlpatterns = [
+    path('', include(router.urls)),
+    path('login/', ProfessorLoginView.as_view(), name='professor-login'),
+    path('dashboard/', ProfessorDashboardView.as_view(), name='professor-dashboard'),
+    path('csrf/', CSRFTokenView.as_view(), name='csrf-token'),
+    path('opportunity/apply/', ApplyResearchOpportunityView.as_view(), name='apply-research-opportunity'),
+    path('applications/', ManageApplicationsView.as_view(), name='manage-applications'),
+    path('applications/<int:application_id>/', ManageApplicationsView.as_view(), name='update-application'),
+]
 
 
 #Create
@@ -27,10 +46,14 @@ router.register('', views.ProfessorView)
 # router.register('api/professor/login/', views.ProfessorLoginView.as_view())
 
 
-urlpatterns = [
-    # API routes
-    path('', include(router.urls)),
-    path('login/', views.ProfessorLoginView.as_view(), name='professor-login'),
+
+
+# urlpatterns = [
+#     # API routes
+#     path('', include(router.urls)),
+#     path('login/', ProfessorLoginView.as_view(), name='professor-login'),
+#     path('dashboard/', ProfessorDashboardAPIView.as_view(), name='professor-dashboard')
+    
 
     # path('createlogin/', views.ProfessorLoginView.as_view(), name='professor-login'),
 
@@ -46,7 +69,7 @@ urlpatterns = [
     # # Non-API routes
     # path('professor/', views.professor_dashboard, name='professor_dashboard'),  # Non-API professor dashboard
     # path('professor/opportunity/create/', views.create_professor_profile, name='create_professor_profile'),  # Non-API profile creation
-]
+# ]
 
 # urlpatterns = [
 #     path('api/', include(router.urls)),
