@@ -151,6 +151,7 @@ class StudentDashboardView(APIView):
             # Fetch the authenticated student
             student = Student.objects.get(id=student_id)
             student_serializer = StudentSerializer(student)
+            # student_skills = student.skills.split(",")
 
             # Fetch all active research opportunities
             research_opportunities = ResearchOpportunity.objects.filter(is_active=True)

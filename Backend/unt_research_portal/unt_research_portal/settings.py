@@ -79,7 +79,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'unt_research_portal.wsgi.application'
-SESSION_COOKIE_NAME = 'api_sessionid'
 
 
 # Database

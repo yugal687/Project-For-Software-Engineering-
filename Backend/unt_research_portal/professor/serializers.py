@@ -17,6 +17,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
     
     def get_student_name(self, obj):
         return f"{obj.student.first_name} {obj.student.last_name}"
+    
+    def update(self, instance, validated_data):
+        # Allow professors to update the status of the application
+        instance.status = validated_data.get('status', instance.status)
+        instance.save()
+        return instance
+    
+    
+
 
 class ResearchOpportunitySerializer(serializers.ModelSerializer):
     students_applied = ApplicationSerializer(many=True, read_only=True)
@@ -26,11 +35,11 @@ class ResearchOpportunitySerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class ResearchOpportunityStudentSerializer(serializers.ModelSerializer):
-    # students_applied = ApplicationSerializer(many=True, read_only=True)
+    students_applied = ApplicationSerializer(many=True, read_only=True)
 
     class Meta:
         model = ResearchOpportunity
-        fields = ['id', "title", "description", "posted_on", "deadline", "required_skills"]
+        fields = "__all__"
 
 # class ProfessorSerializer(serializers.ModelSerializer):
 #     research_posts = ResearchOpportunitySerializer(many=True, read_only=True)
@@ -39,7 +48,7 @@ class ResearchOpportunityStudentSerializer(serializers.ModelSerializer):
 #         model = Professor
 #         fields = 
 class ProfessorSerializer(serializers.ModelSerializer):
-    # research_posts = ResearchOpportunitySerializer(many=True, read_only=True)
+    research_posts = ResearchOpportunitySerializer(many=True, read_only=True)
     # full_name = serializers.SerializerMethodField()
 
     class Meta:

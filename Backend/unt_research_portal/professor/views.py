@@ -15,6 +15,7 @@ from rest_framework.decorators import action
 from students.models import Student
 
 
+
 # @permission_classes([IsAuthenticated])
 class ProfessorView(viewsets.ModelViewSet):
     queryset = Professor.objects.all()
@@ -66,10 +67,81 @@ class ResearchOpportunityViewSet(viewsets.ModelViewSet):
         )
 
 # test
+
 class ApplicationView(viewsets.ModelViewSet):
     queryset = Student_Application.objects.all()
     serializer_class = ApplicationSerializer
+    
+    @action(detail=False, methods=['get'], url_path='filter')
+    def filter_applications(self, request):
+        """
+        Allow professors to filter applications by status or research opportunity.
+        """
+        professor_id = request.session.get('professor_id')
+        if not professor_id:
+            return Response({"error": "Not authenticated. Please log in first."}, status=401)
 
+        try:
+            professor = Professor.objects.get(id=professor_id)
+        except Professor.DoesNotExist:
+            return Response({"error": "Professor not found"}, status=404)
+
+        # Get query parameters for filtering
+        status = request.query_params.get('status', None)  # e.g., ?status=pending
+        opportunity_id = request.query_params.get('opportunity_id', None)  # e.g., ?opportunity_id=1
+
+        # Filter applications for the professor's research opportunities
+        queryset = Student_Application.objects.filter(research_opportunity__professor=professor)
+        if status:
+            queryset = queryset.filter(status=status)
+        if opportunity_id:
+            queryset = queryset.filter(research_opportunity_id=opportunity_id)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+    # @action(detail=False, methods=['get'], url_path='filter')
+    # def filter_applications(self, request):
+    #     """
+    #     Filter applications by status or research opportunity.
+    #     """
+    #     status = request.query_params.get('status', None)  # e.g., ?status=pending
+    #     opportunity_id = request.query_params.get('opportunity_id', None)  # e.g., ?opportunity_id=1
+
+    #     queryset = self.queryset
+    #     if status:
+    #         queryset = queryset.filter(status=status)
+    #     if opportunity_id:
+    #         queryset = queryset.filter(research_opportunity_id=opportunity_id)
+
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return Response(serializer.data)
+
+    @action(detail=True, methods=['patch'], url_path='update-status')
+    def update_status(self, request, pk=None):
+        
+        """
+        Update the status of a specific application.
+        """
+        try:
+            application = self.get_object()
+            new_status = request.data.get('status', None)
+
+            if new_status not in ['pending', 'accepted', 'rejected']:
+                return Response({"error": "Invalid status"}, status=400)
+
+            application.status = new_status
+            application.save()
+
+            return Response({"message": f"Application status updated to {new_status}"})
+        except Student_Application.DoesNotExist:
+            return Response({"error": "Application not found"}, status=404)
+
+
+
+
+    
 
 # test
 # class ProfessorLoginView(APIView):
@@ -131,7 +203,9 @@ class ProfessorLoginView(APIView):
 
             professor_data = ProfessorSerializer(professor).data
             return Response({
-                "message": "Login successful",
+                "message": f"Welcome, {professor.first_name}!",
+                "professor_id": professor.id,
+                "professor_email": professor.email
                 # "professor": professor_data
             }, status=status.HTTP_200_OK)
 
@@ -172,7 +246,7 @@ class ProfessorDashboardView(APIView):
             professor_serializer = ProfessorSerializer(professor)
 
             # Fetch all active research opportunities
-            research_opportunities = ResearchOpportunity.objects.filter(is_active=True)
+            research_opportunities = ResearchOpportunity.objects.filter(professor=professor, is_active=True)
             research_serializer = ResearchOpportunitySerializer(research_opportunities, many=True)
 
             return Response({
@@ -187,12 +261,13 @@ class ProfessorLogoutView(APIView):
     def post(self, request):
         if 'professor_id' in request.session:
             del request.session['professor_id']
+        request.session.flush()
         return Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
     
 class CSRFTokenView(APIView):
     def get(self, request):
         csrf_token = get_token(request)
-        return Response({"csrfToken": csrf_token})
+        return Response({"csrfToken1": csrf_token})
     
 
 # class ProfessorLoginView(APIView):

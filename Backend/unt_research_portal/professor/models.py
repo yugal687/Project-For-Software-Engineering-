@@ -11,6 +11,7 @@ class Professor(models.Model):
     # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='professor_profile', default="")
     email = models.EmailField(max_length=100, unique=True, default="", blank=False)
     password = models.CharField(max_length=128)  # Store hashed passwords
+    # set_password = models.CharField(max_length=128)
     first_name = models.CharField(max_length=100, default="")
     last_name = models.CharField(max_length=100, default="")
     department = models.CharField(max_length=100)
