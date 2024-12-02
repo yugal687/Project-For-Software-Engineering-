@@ -55,11 +55,11 @@ class Professor(models.Model):
         self.posted_opportunities_count += 1
         self.save()
     
-    def set_password(self, password):
-        self.password = make_password(password)
+    # def set_password(self, password):
+    #     self.password = make_password(password)
     
-    def check_password(self, password):
-        return check_password(password, self.password)
+    # def check_password(self, password):
+    #     return check_password(password, self.password)
 
     @property
     def research_posts(self):
@@ -73,6 +73,7 @@ class Professor(models.Model):
 class ResearchOpportunity(models.Model):
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='research_opportunities')
     title = models.CharField(max_length=200)
+    short_description = models.TextField(max_length=100, default="")
     description = models.TextField()
     posted_on = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField()  # Add a deadline field
@@ -119,5 +120,3 @@ class Student_Application(models.Model):
 
 
 
-# hello
-# I am making a research portal using Djano rest framework with next js for university, so i have a professor model already as given above now I want to create authentication for professor also most importantly I want super admin as well that is made by django itself and I dont want to remove or override super admin and leave it as it is, and after making professor authentication checking email and password and then generate a token so that i can store  it in local storage and I want a dashboard  data which I can only get if professor is authenticated that to be shown in dashboard of the professor

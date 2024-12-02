@@ -18,6 +18,10 @@ from django.middleware.csrf import get_token
 from django.http import HttpResponse, JsonResponse
 from .models import Professor
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import get_user_model
+from .authentication import ProfessorBackend
+from django.shortcuts import redirect
+
 
 
 # @permission_classes([IsAuthenticated])
@@ -77,6 +81,97 @@ class ResearchOpportunityViewSet(viewsets.ModelViewSet):
 class ApplicationView(viewsets.ModelViewSet):
     queryset = Student_Application.objects.all()
     serializer_class = ApplicationSerializer
+
+
+
+
+# test by new gpt code ()
+class ProfessorLoginView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        user = ProfessorBackend.authenticate(request, email=email, password=password)
+
+        if user:
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': {
+                    'email': user.email,
+                    'name': user.first_name,
+                },
+                'id': user.id,
+                
+            }, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+# test ny new gpt code ends
+
+
+def get_professor_profile(request):
+    user_id = request.session.get('_auth_user_id')  # Session stores the user ID
+    user = request.user  # Automatically uses get_user to retrieve the user object
+    if user:
+        return JsonResponse({'email': user.id, 'data': user.email})
+    else:
+        return JsonResponse({'error': 'User not found'}, status=404)
+    
+    
+# from django.contrib.auth.decorators import login_required
+
+# # @login_required
+# def get_professor_profile(request):
+#     user = request.user  # Retrieves the authenticated user object
+#     if user.is_authenticated:  # Check if the user is authenticated
+#         return JsonResponse({'email': user.email, 'name': user.first_name})
+#     else:
+#         return JsonResponse({'error': 'User not found'}, status=404)
+
+# class ProfessorProfileView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         serializer = ProfessorSerializer(request.user)
+#         return Response(serializer.data)
+
+
+class ProfessorDashboardAPIView(APIView):
+    def get(self, request):
+        # Retrieve professor email from session
+        professor_email = request.session.get('professor_email')
+
+        if not professor_email:
+            return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            # Fetch professor's information
+            professor = Professor.objects.get(email=professor_email)
+            serializer = ProfessorSerializer(professor)
+
+            return Response({
+                "message": f"Welcome, {professor.first_name}!",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except ObjectDoesNotExist:
+            return Response({"error": "Professor not found."}, status=status.HTTP_404_NOT_FOUND)
+
+class ProfessorLogoutView(APIView):
+    def post(self, request):
+        if 'professor_id' in request.session:
+            del request.session['professor_id']
+        return Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
+    
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+
+def csrf(request):
+    return JsonResponse({'csrfToken': get_token(request)})
+
 
 
 # # test from binod gpt
@@ -278,93 +373,3 @@ class ApplicationView(viewsets.ModelViewSet):
 #             return Response({"error": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-
-from .authentication import ProfessorBackend
-from django.shortcuts import redirect
-# test by new gpt code ()
-class ProfessorLoginView(APIView):
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        user = ProfessorBackend.authenticate(request, email=email, password=password)
-
-        if user:
-            # Generate JWT tokens
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                'user': {
-                    'email': user.email,
-                    'name': user.first_name,
-                },
-                'id': user.id,
-                
-            }, status=status.HTTP_200_OK)
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-# test ny new gpt code ends
-
-from django.contrib.auth import get_user_model
-
-def get_professor_profile(request):
-    user_id = request.session.get('_auth_user_id')  # Session stores the user ID
-    user = request.user  # Automatically uses get_user to retrieve the user object
-    if user:
-        return JsonResponse({'email': user.id, 'data': user.email})
-    else:
-        return JsonResponse({'error': 'User not found'}, status=404)
-    
-    
-# from django.contrib.auth.decorators import login_required
-
-# # @login_required
-# def get_professor_profile(request):
-#     user = request.user  # Retrieves the authenticated user object
-#     if user.is_authenticated:  # Check if the user is authenticated
-#         return JsonResponse({'email': user.email, 'name': user.first_name})
-#     else:
-#         return JsonResponse({'error': 'User not found'}, status=404)
-
-# class ProfessorProfileView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-#         serializer = ProfessorSerializer(request.user)
-#         return Response(serializer.data)
-
-
-class ProfessorDashboardAPIView(APIView):
-    def get(self, request):
-        # Retrieve professor email from session
-        professor_email = request.session.get('professor_email')
-
-        if not professor_email:
-            return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        try:
-            # Fetch professor's information
-            professor = Professor.objects.get(email=professor_email)
-            serializer = ProfessorSerializer(professor)
-
-            return Response({
-                "message": f"Welcome, {professor.first_name}!",
-                "data": serializer.data
-            }, status=status.HTTP_200_OK)
-
-        except ObjectDoesNotExist:
-            return Response({"error": "Professor not found."}, status=status.HTTP_404_NOT_FOUND)
-
-class ProfessorLogoutView(APIView):
-    def post(self, request):
-        if 'professor_id' in request.session:
-            del request.session['professor_id']
-        return Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
-    
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
-
-
-def csrf(request):
-    return JsonResponse({'csrfToken': get_token(request)})
