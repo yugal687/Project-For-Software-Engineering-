@@ -6,7 +6,23 @@ import axios from "axios";
 import Image from "next/image";
 import logo from "@/assets/unt-logo.png";
 
-const FacultyDashboardLayout = ({ children }) => {
+// export async function fetchStudentDashboard() {
+//   try {
+//     const response = await axios.get(
+//       "http://localhost:8000/api/student/dashboard/",
+//       {
+//         withCredentials: true, // Include cookies in requests
+//       }
+//     );
+
+//     return response.data; // Dashboard data
+//   } catch (error) {
+//     console.error("Error fetching dashboard data:", error.response.data);
+//     throw error.response.data;
+//   }
+// }
+
+const StudentDashboard = ({ children }) => {
   const [data, setData] = useState("");
   const [error, setError] = useState(null);
   const router = useRouter();
@@ -16,42 +32,56 @@ const FacultyDashboardLayout = ({ children }) => {
   // const token = params.token;
   // const { id } = router.query.id;
   // const id = localStorage.getItem("user_id");
-  const token = localStorage.getItem("access-token");
-  const id = localStorage.getItem("user_id");
-  //
+  //   const token = localStorage.getItem("access-token");
+  //   const id = localStorage.getItem("user_id");
+  //   //
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    router.push("/faculty/login");
-  };
+  // useEffect(() => {
+  // if (!token) {
+  //   return router.push("/faculty/login");
+  // }
+  // setIsLoading(true);
 
-  useEffect(() => {
-    // if (!token) {
-    //   return router.push("/faculty/login");
-    // }
-    // setIsLoading(true);
+  //   const fetchData = async () => {
+  //     try {
+  //       // const response = await fetch(
+  //       //   `http://127.0.0.1:8000/api/student/dashboard/`,
+  //       //   {
+  //       //     withCredentials: true, // Include cookies in requests
+  //       //   }
+  //       // );
+  //       const response = await axios.get(
+  //         "http://127.0.0.1:8000/api/student/dashboard/",
+  //         {
+  //           withCredentials: true, // Include cookies in requests
+  //         }
+  //       );
 
-    const fetchData = async () => {
-      // try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/professor/${id}/`,
-        {
-          headers: { Authorization: `Token ${token}` }, // Forward the authorization header
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-      setData(data);
-      // } catch (error) {
-      //   setError(error);
-      // } finally {
-      //   // setIsLoading(false);
-      // }
-    };
+  //       // return response.data; // Dashboard data
+  //       const data = await response.json();
+  //       console.log(data);
+  //       setData(data);
+  //     } catch (error) {
+  //       setError(error);
+  //     } finally {
+  //       // setIsLoading(false);
+  //     }
+  //   };
 
-    fetchData();
-  }, [token]);
+  //   fetchData();
+  // }, [router]);
+
+  // // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const dashboardData = await fetchStudentDashboard();
+  //       setData(dashboardData);
+  //     } catch (err) {
+  //       setError(err.error || "Failed to load dashboard");
+  //     }
+  //   }
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="container-fluid">
@@ -149,7 +179,7 @@ const FacultyDashboardLayout = ({ children }) => {
           <nav class="navbar navbar-light primary-background p-3 dash-nav">
             <div class="d-flex col-12 col-md-3 col-lg-2 mb-2 mb-lg-0 flex-wrap flex-md-nowrap justify-content-between">
               <a class="navbar-brand text-white fw-bold" href="#">
-                Faculty Dashboard
+                Student Dashboard
               </a>
               <button
                 class="navbar-toggler d-md-none collapsed mb-3"
@@ -191,11 +221,7 @@ const FacultyDashboardLayout = ({ children }) => {
                     <a className="dropdown-item" href="#"></a>
                   </li>
                   <li>
-                    <a
-                      onClick={handleLogout}
-                      className="dropdown-item"
-                      href="#"
-                    >
+                    <a className="dropdown-item" href="#">
                       Logout
                     </a>
                   </li>
@@ -211,4 +237,4 @@ const FacultyDashboardLayout = ({ children }) => {
   );
 };
 
-export default FacultyDashboardLayout;
+export default StudentDashboard;

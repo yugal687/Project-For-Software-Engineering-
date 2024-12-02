@@ -2,6 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AddBootstrap from "../components/AddBootstrap";
 // import localFont from "next/font/local";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <AddBootstrap />
+        <Toaster position="top-right" />
         {children}
       </body>
     </html>

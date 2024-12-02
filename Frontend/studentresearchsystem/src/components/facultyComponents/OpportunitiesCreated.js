@@ -45,17 +45,21 @@ const OpportunitiesCreated = () => {
         <div className="pt-3 pb-2 mb-3 border-bottom px-2">
           Faculty's Created Opportunities List
         </div>
+        <Link href="/faculty/dashboard/opportunities/create">
+          <button className="btn btn-success">Create Opportunity</button>
+        </Link>
+
         {data &&
           data.research_posts.map((i) => {
             return (
-              <div class="card">
+              <div class="card mt-3">
                 <div class="card-body">
                   <h5 class="card-title"></h5>
                   <h6 class="card-subtitle mb-2 text-muted">{i.title}</h6>
                   <p class="card-text">{i.description}</p>
-                  <a href="#" class="card-link">
+                  <Link href="/faculty/opportunities" class="card-link">
                     Card link
-                  </a>
+                  </Link>
                   <a href="#" class="card-link">
                     Another link
                   </a>
