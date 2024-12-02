@@ -2,6 +2,7 @@
 venv/
 env/
 .venv/
+unt_portal_venv/
 
 # Python cache files
 __pycache__/

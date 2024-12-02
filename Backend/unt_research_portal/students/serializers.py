@@ -76,7 +76,7 @@ class StudentRegistrationSerializer(serializers.ModelSerializer):
         validated_data['password'] = make_password(validated_data['password'])  # Hash the password
         return super().create(validated_data)
     
-class ResearchOpportunitySerializer(serializers.ModelSerializer):
+class ResearchOpportunityStudentSerializer(serializers.ModelSerializer):
     professor_name = serializers.SerializerMethodField()
 
     class Meta:
@@ -85,5 +85,12 @@ class ResearchOpportunitySerializer(serializers.ModelSerializer):
 
     def get_professor_name(self, obj):
         return f"{obj.professor.first_name} {obj.professor.last_name}"
+    
+    
+
+class StudentResumeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id', 'first_name', 'last_name', 'email', 'resume']  # Include resume field
 
 

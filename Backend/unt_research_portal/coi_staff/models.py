@@ -20,8 +20,8 @@ class COIStaff(models.Model):
     responsibilities = models.TextField(null=True, blank=True)  # Description of responsibilities
     managed_departments = models.TextField(null=True, blank=True)  # Departments managed by the staff (comma-separated)
     notifications_enabled = models.BooleanField(default=True)  # Notification preferences
-    last_login = models.DateTimeField(null=True, blank=True)  # Last login timestamp
-    created_by = models.CharField(max_length=100, null=True, blank=True)  # Name of admin who created the account
+    # last_login = models.DateTimeField(null=True, blank=True)  # Last login timestamp
+    # created_by = models.CharField(max_length=100, null=True, blank=True)  # Name of admin who created the account
     
     def save(self, *args, **kwargs):
         # Hash the password if it's not already hashed
@@ -37,7 +37,4 @@ class COIStaff(models.Model):
         self.is_active = not self.is_active
         self.save()
 
-    def update_last_login(self):
-        """Update last login timestamp."""
-        self.last_login = timezone.now()
-        self.save()
+    

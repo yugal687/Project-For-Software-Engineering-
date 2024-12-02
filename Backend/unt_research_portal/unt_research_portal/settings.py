@@ -29,6 +29,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
 
 # Application definition
 
@@ -123,9 +125,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
     ],
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
 }
 
 # SIMPLE_JWT = {
@@ -135,17 +137,16 @@ REST_FRAMEWORK = {
 #     'BLACKLIST_AFTER_ROTATION': True,
 # }
 
-from datetime import timedelta
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Adjust the token lifetime
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,  # Ensure this matches the project's SECRET_KEY
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'email',  # Use 'email' if you're not using Django's default user
-    'USER_ID_CLAIM': 'email',
-}
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Adjust the token lifetime
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+#     'ALGORITHM': 'HS256',
+#     'SIGNING_KEY': SECRET_KEY,  # Ensure this matches the project's SECRET_KEY
+#     'AUTH_HEADER_TYPES': ('Bearer',),
+#     'USER_ID_FIELD': 'email',  # Use 'email' if you're not using Django's default user
+#     'USER_ID_CLAIM': 'email',
+# }
 
 
 CORS_ALLOWED_ORIGINS = [

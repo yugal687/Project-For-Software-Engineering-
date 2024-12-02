@@ -116,11 +116,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import StudentLoginSerializer, StudentSerializer
+from .serializers import StudentLoginSerializer, StudentSerializer, ResearchOpportunityStudentSerializer
 from .models import Student
 from django.middleware.csrf import get_token
-from professor.models import ResearchOpportunity
-from professor.serializers import ResearchOpportunitySerializer, ResearchOpportunityStudentSerializer
+from professor.models import ResearchOpportunity, Student_Application
+from professor.serializers import ApplicationSerializer
 
 
 class StudentLoginView(APIView):
@@ -132,6 +132,9 @@ class StudentLoginView(APIView):
             # Save student info in session
             request.session['student_id'] = student.id
             request.session['student_email'] = student.email
+            request.session.save()
+            
+            print("Session Data:", request.session.items())
 
             student_data = StudentSerializer(student).data
             return Response({
@@ -190,6 +193,30 @@ class StudentLogoutView(APIView):
         return Response({"error": "No active session found."}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+# class ApplyResearchOpportunityView(APIView):
+#     def post(self, request):
+#         student_id = request.session.get('student_id')  # Get student from session
+#         if not student_id:
+#             return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
+
+#         opportunity_id = request.data.get('research_opportunity')
+#         if not opportunity_id:
+#             return Response({"error": "Research opportunity ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             research_opportunity = ResearchOpportunity.objects.get(id=opportunity_id)
+#         except ResearchOpportunity.DoesNotExist:
+#             return Response({"error": "Research opportunity not found."}, status=status.HTTP_404_NOT_FOUND)
+
+#         # Check if student has already applied
+#         if Student_Application.objects.filter(student_id=student_id, research_opportunity=research_opportunity).exists():
+#             return Response({"error": "You have already applied for this research opportunity."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Create application
+#         application = Student_Application.objects.create(student_id=student_id, research_opportunity=research_opportunity)
+#         serializer = ApplicationSerializer(application)
+#         return Response({"message": "Application submitted successfully", "application": serializer.data}, status=status.HTTP_201_CREATED)
 
 class CSRFTokenView(APIView):
     def get(self, request):
@@ -267,3 +294,97 @@ class CSRFTokenView(APIView):
 
 
 
+
+import os
+from docx import Document
+from PyPDF2 import PdfReader
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Student
+from professor.models import ResearchOpportunity, Student_Application
+
+class ResumeAnalyzer:
+    @staticmethod
+    def extract_text(file_path):
+        """Extract text from a resume file."""
+        _, extension = os.path.splitext(file_path)
+
+        if extension == ".docx":
+            doc = Document(file_path)
+            return " ".join([para.text for para in doc.paragraphs])
+        elif extension == ".pdf":
+            reader = PdfReader(file_path)
+            return " ".join([page.extract_text() for page in reader.pages])
+        else:
+            raise ValueError("Unsupported file format. Please upload a .docx or .pdf file.")
+
+    @staticmethod
+    def analyze_resume(file_path, required_keywords):
+        """Analyze the resume and return a score."""
+        text = ResumeAnalyzer.extract_text(file_path)
+
+        # Tokenize and clean text
+        tokens = word_tokenize(text.lower())
+        stop_words = set(stopwords.words('english'))
+        filtered_tokens = [word for word in tokens if word.isalnum() and word not in stop_words]
+
+        # Match keywords and calculate score
+        matches = [word for word in filtered_tokens if word in required_keywords]
+        score = len(matches) / len(required_keywords) * 100
+        return score
+
+class ApplyResearchOpportunityView(APIView):
+    def post(self, request):
+        student_id = request.session.get('student_id')
+        if not student_id:
+            return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        opportunity_id = request.data.get('research_opportunity')
+        resume_file = request.FILES.get('resume') 
+        if not opportunity_id:
+            return Response({"error": "Research opportunity ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            research_opportunity = ResearchOpportunity.objects.get(id=opportunity_id)
+        except ResearchOpportunity.DoesNotExist:
+            return Response({"error": "Research opportunity not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if student has already applied
+        if Student_Application.objects.filter(student_id=student_id, research_opportunity=research_opportunity).exists():
+            return Response({"error": "You have already applied for this research opportunity."}, status=status.HTTP_400_BAD_REQUEST)
+
+        
+        # Validate resume upload
+        if not resume_file:
+            return Response({"error": "Resume upload is required to apply."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Save the uploaded resume temporarily
+        student = Student.objects.get(id=student_id)
+        application = Student_Application.objects.create(
+            student=student,
+            research_opportunity=research_opportunity,
+            resume=resume_file
+        )
+        # Analyze the resume
+        resume_path = application.resume.path
+        required_keywords = research_opportunity.required_skills.split(",")  # Assuming skills are comma-separated
+        score = ResumeAnalyzer.analyze_resume(resume_path, required_keywords)
+
+        # Validate the score threshold
+        threshold = 70  # Example threshold
+        if score < threshold:
+            application.delete()  # Cleanup if the resume doesn't meet the threshold
+            return Response({"error": f"Resume score too low ({score:.2f}%). Minimum required: {threshold}%."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save the score to the application
+        application.resume_score = score
+        application.save()
+
+        return Response({
+            "message": "Application submitted successfully",
+            "application_id": application.id,
+            "score": score
+        }, status=status.HTTP_201_CREATED)

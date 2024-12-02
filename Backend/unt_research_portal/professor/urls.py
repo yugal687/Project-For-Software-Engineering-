@@ -24,7 +24,7 @@ from .views import ProfessorLoginView, ProfessorDashboardView, CSRFTokenView, Ap
 # Using Session 
 router = DefaultRouter()
 router.register('opportunity', views.ResearchOpportunityViewSet)  # Register opportunities
-router.register('list', views.ProfessorView)  # Distinguish from 'login/'
+router.register('', views.ProfessorView)  # Distinguish from 'login/'
 router.register('applications', ApplicationView, basename='application')
 
 
@@ -34,7 +34,7 @@ urlpatterns = [
     path('login/', ProfessorLoginView.as_view(), name='professor-login'),
     path('dashboard/', ProfessorDashboardView.as_view(), name='professor-dashboard'),
     path('csrf/', CSRFTokenView.as_view(), name='csrf-token'),
-    path('opportunity/apply/', ApplyResearchOpportunityView.as_view(), name='apply-research-opportunity'),
+    # path('opportunity/apply/', ApplyResearchOpportunityView.as_view(), name='apply-research-opportunity'),
     path('applications/', ManageApplicationsView.as_view(), name='manage-applications'),
     path('applications/<int:application_id>/', ManageApplicationsView.as_view(), name='update-application'),
     path('', include(router.urls)),

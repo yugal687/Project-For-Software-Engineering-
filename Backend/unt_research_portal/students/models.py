@@ -21,8 +21,15 @@ class Student(models.Model):
     linked_in_profile = models.URLField(null=True, blank=True)  # LinkedIn profile link
     portfolio_website = models.URLField(null=True, blank=True)  # Personal portfolio link
     github_profile = models.URLField(null=True, blank=True)  # GitHub profile link
+    applied_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     # created_at = models.DateTimeField(auto_now_add=True, default="")  # Account creation date
     # updated_at = models.DateTimeField(auto_now=True, default="")  # Last profile update
+    status = models.CharField(
+        max_length=20,
+        choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')],
+        default='pending'
+    )
+    resume_score = models.FloatField(null=True, blank=True)  # Resume analysis score
     
     def save(self, *args, **kwargs):
         # Hash the password if it's not already hashed
