@@ -20,3 +20,8 @@
 .dash-nav{
   border-left: 2px solid #fff;
 }
+.ant-progress-inner {
+  width: 218px;
+  height: 220px;
+  font-size: 48px;
+}

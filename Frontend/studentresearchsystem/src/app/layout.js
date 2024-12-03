@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import AddBootstrap from "../components/AddBootstrap";
+// import "react-circular-progressbar/dist/styles.css";
 // import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";

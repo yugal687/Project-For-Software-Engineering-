@@ -58,9 +58,9 @@ const StudentsApplication = () => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/professor/applications/${opportunityID}/`,
+        `http://127.0.0.1:8000/api/professor/applications/${opportunityID}/update-status/`,
         {
-          method: "PUT", // Use PUT or PATCH depending on your API design
+          method: "PATCH", // Use PUT or PATCH depending on your API design
           headers: {
             "Content-Type": "application/json", // Sending JSON data
           },
