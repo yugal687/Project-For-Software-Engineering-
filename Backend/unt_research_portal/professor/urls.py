@@ -36,6 +36,8 @@ urlpatterns = [
     path('login/', views.ProfessorLoginView.as_view(), name='professor-login'),
     # path('dashboard/', views.ProfessorProfileView.as_view(), name='detail'),
     path('dashboard/', views.get_professor_profile, name='detail'),
+    path('applications/<int:pk>/update-status/', views.UpdateApplicationStatusView.as_view(), name='update-application'),
+
 
     # path('<pk>/', views.ProfessorView.as_view(), name="professor-detail"),
     path('', include(router.urls)),

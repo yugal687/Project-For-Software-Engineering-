@@ -20,7 +20,10 @@ urlpatterns = [
     path('login/', StudentLoginView.as_view(), name='student-login'),
     path('dashboard/', StudentDashboardView.as_view(), name='student-dashboard'),
     path('get-active-opportunities/', AllResearchOpportunitiesView.as_view(), name='active-opportunities'),
+    path('my/getscore/', ApplyResearchOpportunityView.as_view(), name='student-score'),
     path('logout/', StudentLogoutView.as_view(), name='student-logout'),
+    
+
     # path('opportunity/apply/', StudentApplicationView.as_view(), name='apply-research-opportunity'),
     path('', include(router.urls)),
     # path('csrf/', CSRFTokenView.as_view(), name='csrf-token'),

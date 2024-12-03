@@ -13,7 +13,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentApplication
         fields = '__all__'
-        read_only_fields = ['resume', 'student', 'research_opportunity']
+        # read_only_fields = ['resume', 'student', 'research_opportunity']
 
     def get_student_name(self, obj):
         return f"{obj.student.first_name} {obj.student.last_name}"

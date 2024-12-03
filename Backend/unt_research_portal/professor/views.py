@@ -79,6 +79,25 @@ class ApplicationView(viewsets.ModelViewSet):
     queryset = StudentApplication.objects.all()
     serializer_class = ApplicationSerializer
 
+class UpdateApplicationStatusView(APIView):
+    def patch(self, request, pk):
+        try:
+            # Get the application instance
+            application = StudentApplication.objects.get(pk=pk)
+        except StudentApplication.DoesNotExist:
+            return Response({"error": "Application not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Pass the application instance and request data to the serializer
+        serializer = ApplicationSerializer(application, data=request.data, partial=True)
+
+        # Validate the data
+        if serializer.is_valid():
+            # Call the update method
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+     
+
 # class StudentApplicationView(viewsets.ModelViewSet):
 #     # research_opportunities = ResearchOpportunity.objects.filter(is_active=True)
 #     # research_serializer = ResearchOpportunityStudentSerializer(research_opportunities, many=True)
