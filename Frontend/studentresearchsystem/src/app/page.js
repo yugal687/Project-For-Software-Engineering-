@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
 
 // export async function getServerSideProps() {
 //   const res = await fetch("http://localhost:8000/api/professor/");
@@ -12,9 +13,9 @@ import Link from "next/link";
 
 const Home = async () => {
   // const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const res = await fetch("http://localhost:8000/api/professor/");
-  const data = await res.json();
+  // const [loading, setLoading] = useState(true);
+  // const res = await fetch("http://localhost:8000/api/professor/");
+  // const data = await res.json();
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -29,7 +30,7 @@ const Home = async () => {
   return (
     <div className="landing-page">
       {/* Navigation */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      {/* <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container">
           <a className="navbar-brand" href="#">
             Student Research Hub
@@ -81,7 +82,8 @@ const Home = async () => {
             </ul>
           </div>
         </div>
-      </nav>
+      </nav> */}
+      <Navbar />
 
       {/* Hero Section */}
       <div className="primary-background text-white text-center py-5">

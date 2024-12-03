@@ -1,10 +1,10 @@
 import React from "react";
-import FacultyLogin from "@/components/facultyComponents/FacultyLogin";
+import StaffLogin from "@/components/staffComponents/StaffLogin";
 
 function page({}) {
   return (
     <div>
-      <FacultyLogin />
+      <StaffLogin />
     </div>
   );
 }

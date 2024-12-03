@@ -94,7 +94,7 @@ const PortalPage = () => {
                   <p className="card-text">
                     Login to your professor portal to manage courses and grades.
                   </p>
-                  <Link href="/faculty/login">
+                  <Link href="/staff/login">
                     <button className="btn btn-success w-100">
                       Click Here
                     </button>
@@ -113,7 +113,7 @@ const PortalPage = () => {
                   <p className="card-text">
                     Login to the staff portal to manage administrative tasks.
                   </p>
-                  <Link href="/coi-staff/login">
+                  <Link href="/staff/login">
                     <button className="btn btn-warning w-100">
                       Click Here
                     </button>

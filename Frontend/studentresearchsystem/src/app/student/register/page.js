@@ -5,7 +5,7 @@ import logo from "@/assets/unt-logo.png";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 
-const RegisterStaff = () => {
+const RegisterStudent = () => {
   const [formData, setFormData] = useState({
     user: 1, // Assuming a default user ID for now
     first_name: "",
@@ -70,7 +70,7 @@ const RegisterStaff = () => {
               <div className="card p-5 shadow-sm">
                 <div className="card-body">
                   <h1 className="text-center text-success mb-4">
-                    Register as COI Staff
+                    Register as Student
                   </h1>
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3">
@@ -228,4 +228,4 @@ const RegisterStaff = () => {
   );
 };
 
-export default RegisterStaff;
+export default RegisterStudent;

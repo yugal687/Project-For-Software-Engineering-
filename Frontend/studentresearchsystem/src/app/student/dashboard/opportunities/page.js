@@ -125,7 +125,9 @@ const page = () => {
       <div>
         <section id="featured" className="bg-light py-5">
           <div className="container">
-            <h3 className="text-center mb-4">Featured Research Projects</h3>
+            <h3 className="text-center mb-4">
+              Explore and Apply for Research Opportunities
+            </h3>
             <div className="row">
               {data &&
                 data.map((i) => {
@@ -143,21 +145,21 @@ const page = () => {
                           <div className="d-flex">
                             <button
                               type="button"
-                              class="btn btn-primary"
+                              class="btn btn-success"
                               data-bs-toggle="modal"
                               data-bs-target="#exampleModal"
                               onClick={() => handleApplyClick(i.id)}
                             >
                               Apply
                             </button>
-                            <button
+                            {/* <button
                               type="button"
                               class="btn btn-primary"
                               data-bs-toggle="modal"
                               data-bs-target="#exampleModal2"
                             >
                               Get Score
-                            </button>
+                            </button> */}
                           </div>
                         </div>
                       </div>

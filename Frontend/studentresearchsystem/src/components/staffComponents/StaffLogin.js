@@ -16,21 +16,19 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/student/login/",
+        "http://localhost:8000/api/professor/login/",
         {
           email,
           password,
         }
       );
       // Save the JWT token to local storage
-      // localStorage.setItem("access_token", response.data.access);
-      localStorage.setItem("user_id", response.data.student.id);
-      localStorage.setItem("user_id", response.data.student.id);
-      console.log(response.data.student.id);
+      localStorage.setItem("access_token", response.data.access);
+      localStorage.setItem("user_id", response.data.id);
 
       //   setData(response.data);
       //   professor_id = response.data.professor_id;
-      const path = "/student/dashboard";
+      const path = "/faculty/dashboard";
       router.push(path);
 
       //   router.push(`/faculty/dashboard/${response.data && professor_id}`);
@@ -40,30 +38,6 @@ export default function Login() {
   };
 
   return (
-    //   <div>
-    //     <h1>Login</h1>
-    //     <form onSubmit={handleLogin}>
-    //       <div>
-    //         <label>Email:</label>
-    //         <input
-    //           type="text"
-    //           value={email}
-    //           onChange={(e) => setEmail(e.target.value)}
-    //         />
-    //       </div>
-    //       <div>
-    //         <label>Password</label>
-    //         <input
-    //           type="password"
-    //           value={password}
-    //           onChange={(e) => setPassword(e.target.value)}
-    //         />
-    //       </div>
-    //       {error && <p>{error}</p>}
-    //       <button type="submit">Login</button>
-    //     </form>
-    //   </div>
-    // );
     <>
       <Navbar />
       <div
@@ -72,7 +46,7 @@ export default function Login() {
       >
         <div className="card p-4" style={{ width: "100%", maxWidth: "400px" }}>
           <h3 className="text-center mb-4" style={{ color: "#006a00" }}>
-            Student Login
+            COI Staff Login
           </h3>
           <form onSubmit={handleLogin}>
             {/* Email Field */}
@@ -120,7 +94,7 @@ export default function Login() {
           <div className="text-center mt-3">
             <p className="primary-color">Don't have an account? </p>
             <div>
-              <a className="primary-color" href="/student/register">
+              <a className="primary-color" href="/staff/register">
                 Register here
               </a>
             </div>

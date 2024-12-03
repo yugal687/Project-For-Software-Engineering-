@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Dashboard from "@/components/facultyComponents/Dashboard";
+import Dashboard from "@/components/staffComponents/Dashboard";
 
 const page = () => {
   const [data, setData] = useState("");

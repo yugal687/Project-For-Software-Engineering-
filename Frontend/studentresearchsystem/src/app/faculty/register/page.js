@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import logo from "@/assets/unt-logo.png";
+import Image from "next/image";
 
 const RegisterProfessor = () => {
   const [formData, setFormData] = useState({
@@ -24,9 +26,9 @@ const RegisterProfessor = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  //   const handleFileChange = (e) => {
-  //     setFormData({ ...formData, profile_picture: e.target.files[0] });
-  //   };
+  // const handleFileChange = (e) => {
+  //   setFormData({ ...formData, profile_picture: e.target.files[0] });
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,104 +60,163 @@ const RegisterProfessor = () => {
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-      <h1>Register Professor</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          First Name:
-          <input
-            type="text"
-            name="first_name"
-            value={formData.first_name}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Last Name:
-          <input
-            type="text"
-            name="last_name"
-            value={formData.last_name}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Department:
-          <input
-            type="text"
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Title:
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Office Location:
-          <input
-            type="text"
-            name="office_location"
-            value={formData.office_location}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Phone Number:
-          <input
-            type="text"
-            name="phone_number"
-            value={formData.phone_number}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Research Interests:
-          <textarea
-            name="research_interests"
-            value={formData.research_interests}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Publications:
-          <textarea
-            name="publications"
-            value={formData.publications}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        {/* <label>
-          Profile Picture:
-          <input
-            type="file"
-            name="profile_picture"
-            onChange={handleFileChange}
-          />
-        </label> */}
-        <br />
-        <button type="submit" disabled={uploading}>
-          {uploading ? "Submitting..." : "Submit"}
-        </button>
-      </form>
+    <div className="container-fluid primary-background py-5">
+      <div className="container">
+        <div className="row">
+          <div className="col-md-6">
+            <div className="card p-5 shadow-sm">
+              <div className="card-body">
+                <h1 className="text-center text-success mb-4">
+                  Register as Faculty Staff
+                </h1>
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-3">
+                    <label htmlFor="first_name" className="form-label">
+                      First Name:
+                    </label>
+                    <input
+                      type="text"
+                      id="first_name"
+                      name="first_name"
+                      value={formData.first_name}
+                      onChange={handleChange}
+                      required
+                      className="form-control"
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="last_name" className="form-label">
+                      Last Name:
+                    </label>
+                    <input
+                      type="text"
+                      id="last_name"
+                      name="last_name"
+                      value={formData.last_name}
+                      onChange={handleChange}
+                      required
+                      className="form-control"
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="department" className="form-label">
+                      Department:
+                    </label>
+                    <input
+                      type="text"
+                      id="department"
+                      name="department"
+                      value={formData.department}
+                      onChange={handleChange}
+                      required
+                      className="form-control"
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="title" className="form-label">
+                      Title:
+                    </label>
+                    <input
+                      type="text"
+                      id="title"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleChange}
+                      required
+                      className="form-control"
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="office_location" className="form-label">
+                      Office Location:
+                    </label>
+                    <input
+                      type="text"
+                      id="office_location"
+                      name="office_location"
+                      value={formData.office_location}
+                      onChange={handleChange}
+                      className="form-control"
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="phone_number" className="form-label">
+                      Phone Number:
+                    </label>
+                    <input
+                      type="text"
+                      id="phone_number"
+                      name="phone_number"
+                      value={formData.phone_number}
+                      onChange={handleChange}
+                      className="form-control"
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="research_interests" className="form-label">
+                      Research Interests:
+                    </label>
+                    <textarea
+                      id="research_interests"
+                      name="research_interests"
+                      value={formData.research_interests}
+                      onChange={handleChange}
+                      className="form-control"
+                      rows="4"
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="publications" className="form-label">
+                      Publications:
+                    </label>
+                    <textarea
+                      id="publications"
+                      name="publications"
+                      value={formData.publications}
+                      onChange={handleChange}
+                      className="form-control"
+                      rows="4"
+                    />
+                  </div>
+
+                  {/* <div className="mb-3">
+              <label htmlFor="profile_picture" className="form-label">
+                Profile Picture:
+              </label>
+              <input
+                type="file"
+                id="profile_picture"
+                name="profile_picture"
+                onChange={handleFileChange}
+                className="form-control"
+              />
+            </div> */}
+
+                  <div className="d-flex justify-content-center">
+                    <button
+                      type="submit"
+                      disabled={uploading}
+                      className="btn btn-success px-5"
+                    >
+                      {uploading ? "Submitting..." : "Submit"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <Image src={logo} alt="Landscape picture" className="img-fluid" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
