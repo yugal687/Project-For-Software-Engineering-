@@ -98,12 +98,12 @@ const StudentDashboard = ({ children }) => {
                   className={
                     "nav-link " +
                     `${
-                      pathname === "/faculty/dashboard"
+                      pathname === "/student/dashboard"
                         ? "active"
                         : "text-white"
                     }`
                   }
-                  href="/faculty/dashboard"
+                  href="/student/dashboard"
                 >
                   <i className="bi bi-house-door"></i> Dashboard
                 </Link>
@@ -113,12 +113,12 @@ const StudentDashboard = ({ children }) => {
                   className={
                     "nav-link " +
                     `${
-                      pathname === "/faculty/dashboard/profile"
+                      pathname === "/student/dashboard/profile"
                         ? "active"
                         : "text-white"
                     }`
                   }
-                  href="/faculty/dashboard/profile"
+                  href="/student/dashboard/profile"
                 >
                   <i className="bi bi-person"></i> Profile
                 </Link>
@@ -128,30 +128,15 @@ const StudentDashboard = ({ children }) => {
                   className={
                     "nav-link " +
                     `${
-                      pathname === "/faculty/dashboard/student-applications"
+                      pathname === "/student/dashboard/opportunities"
                         ? "active"
                         : "text-white"
                     }`
                   }
-                  href="/faculty/dashboard/student-applications"
+                  href="/student/dashboard/opportunities"
                 >
                   <i className="bi bi-file-earmark-arrow-up"></i> View
-                  Applicants
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className={
-                    "nav-link " +
-                    `${
-                      pathname === "/faculty/dashboard/opportunities"
-                        ? "active"
-                        : "text-white"
-                    }`
-                  }
-                  href="/faculty/dashboard/opportunities"
-                >
-                  <i className="bi bi-person"></i> View My Research Posts
+                  Opportunities
                 </Link>
               </li>
 

@@ -2,27 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { toast } from "react-hot-toast";
-
-export async function loginStudent(email, password) {
-  try {
-    const response = await axios.post(
-      "http://localhost:8000/api/student/login/",
-      {
-        email,
-        password,
-      },
-      {
-        withCredentials: true, // Include cookies in requests
-      }
-    );
-
-    return response.data; // Handle the login response
-  } catch (error) {
-    console.error("Login failed:", error.response.data);
-    throw error.response.data;
-  }
-}
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -32,16 +11,6 @@ export default function Login() {
   const [data, setData] = useState([]);
   //   const [userID, setUserID]
 
-  //   const handleLogin = async (e) => {
-  //     e.preventDefault();
-  //     try {
-  //       await loginStudent(email, password);
-  //       router.push('/student/dashboard'); // Redirect to the dashboard
-  //     } catch (err) {
-  //       setError(err.error || 'Login failed');
-  //     }
-  //   };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -50,27 +19,18 @@ export default function Login() {
         {
           email,
           password,
-        },
-        {
-          withCredentials: true, // Include cookies in requests
         }
       );
-
-      if (response.status == 200) {
-        toast.success("You did it");
-
-        router.push("/student/dashboard");
-      }
       // Save the JWT token to local storage
-      //   localStorage.setItem("access_token", response.data.access);
-      //   localStorage.setItem("user_id", response.data.id);
-      console.log(response.status);
-      console.log(response.data);
+      // localStorage.setItem("access_token", response.data.access);
+      localStorage.setItem("user_id", response.data.student.id);
+      localStorage.setItem("user_id", response.data.student.id);
+      console.log(response.data.student.id);
 
-      // setData(response.data);
+      //   setData(response.data);
       //   professor_id = response.data.professor_id;
-      //   const path = "/student/dashboard";
-      //   router.push(path);
+      const path = "/student/dashboard";
+      router.push(path);
 
       //   router.push(`/faculty/dashboard/${response.data && professor_id}`);
     } catch (error) {
@@ -79,28 +39,90 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    //   <div>
+    //     <h1>Login</h1>
+    //     <form onSubmit={handleLogin}>
+    //       <div>
+    //         <label>Email:</label>
+    //         <input
+    //           type="text"
+    //           value={email}
+    //           onChange={(e) => setEmail(e.target.value)}
+    //         />
+    //       </div>
+    //       <div>
+    //         <label>Password</label>
+    //         <input
+    //           type="password"
+    //           value={password}
+    //           onChange={(e) => setPassword(e.target.value)}
+    //         />
+    //       </div>
+    //       {error && <p>{error}</p>}
+    //       <button type="submit">Login</button>
+    //     </form>
+    //   </div>
+    // );
+    <div
+      className="d-flex justify-content-center align-items-center min-vh-100"
+      style={{ backgroundColor: "#006a00" }}
+    >
+      <div className="card p-4" style={{ width: "100%", maxWidth: "400px" }}>
+        <h3 className="text-center mb-4" style={{ color: "#006a00" }}>
+          Student Login
+        </h3>
+        <form onSubmit={handleLogin}>
+          {/* Email Field */}
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              Email
+            </label>
+            <input
+              type="email"
+              className="form-control"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          {/* Password Field */}
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="btn primary-background primary-color w-100"
+            style={{ backgroundColor: "#006a00", color: "#ffffff" }}
+          >
+            Login
+          </button>
+        </form>
+
+        <div className="text-center mt-3">
+          <p className="primary-color">Don't have an account? </p>
+          <div>
+            <a className="primary-color" href="/faculty/register">
+              Register here
+            </a>
+          </div>
         </div>
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {error && <p>{error}</p>}
-        <button type="submit">Login</button>
-      </form>
+      </div>
     </div>
   );
 }

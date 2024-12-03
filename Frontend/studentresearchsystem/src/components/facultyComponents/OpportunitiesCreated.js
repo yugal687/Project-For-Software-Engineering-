@@ -57,12 +57,12 @@ const OpportunitiesCreated = () => {
                   <h5 class="card-title"></h5>
                   <h6 class="card-subtitle mb-2 text-muted">{i.title}</h6>
                   <p class="card-text">{i.description}</p>
-                  <Link href="/faculty/opportunities" class="card-link">
-                    Card link
+                  <Link
+                    href={`/faculty/dashboard/opportunities/${i.id}`}
+                    class="btn primary-background text-white"
+                  >
+                    View Detail
                   </Link>
-                  <a href="#" class="card-link">
-                    Another link
-                  </a>
                 </div>
               </div>
             );

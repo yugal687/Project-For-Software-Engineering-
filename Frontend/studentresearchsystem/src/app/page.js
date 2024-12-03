@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Link from "next/link";
 
 // export async function getServerSideProps() {
 //   const res = await fetch("http://localhost:8000/api/professor/");
@@ -33,11 +34,7 @@ const Home = async () => {
           <a className="navbar-brand" href="#">
             Student Research Hub
           </a>
-          <div>
-            {data.map((item) => {
-              <li key={item.id}>{item.first_name}</li>;
-            })}
-          </div>
+
           <button
             className="navbar-toggler"
             type="button"
@@ -71,13 +68,23 @@ const Home = async () => {
                   Contact
                 </a>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" href="/portal">
+                  Portals
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" href="/faculty/login">
+                  Login
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <div className="bg-light text-center py-5">
+      <div className="primary-background text-white text-center py-5">
         <div className="container">
           <h1 className="display-4">Discover Student Research Opportunities</h1>
           <p className="lead">
@@ -137,7 +144,7 @@ const Home = async () => {
       </section>
 
       {/* Featured Projects Section */}
-      <section id="featured" className="bg-light py-5">
+      <section id="featured" className="primary-background text-white  py-5">
         <div className="container">
           <h3 className="text-center mb-4">Featured Research Projects</h3>
           <div className="row">

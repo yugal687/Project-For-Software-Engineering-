@@ -21,8 +21,8 @@ const FacultyDashboardLayout = ({ children }) => {
   //
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    // localStorage.removeItem("accessToken");
+    // localStorage.removeItem("refreshToken");
     router.push("/faculty/login");
   };
 
