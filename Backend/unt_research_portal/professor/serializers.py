@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Professor, ResearchOpportunity, Student_Application
+from .models import Professor, ResearchOpportunity, StudentApplication
 # from django.contrib.auth.models import User
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -11,11 +11,18 @@ class ApplicationSerializer(serializers.ModelSerializer):
     # test
     student_name = serializers.SerializerMethodField()
     class Meta:
-        model = Student_Application
+        model = StudentApplication
         fields = '__all__'
+        read_only_fields = ['resume', 'student', 'research_opportunity']
 
     def get_student_name(self, obj):
         return f"{obj.student.first_name} {obj.student.last_name}"
+    
+    def update(self, instance, validated_data):
+        # Allow professors to update the status of the application
+        instance.status = validated_data.get('status', instance.status)
+        instance.save()
+        return instance
 
 class ResearchOpportunitySerializer(serializers.ModelSerializer):
     students_applied = ApplicationSerializer(many=True, read_only=True)

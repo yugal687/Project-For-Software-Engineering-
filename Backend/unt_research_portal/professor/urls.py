@@ -15,9 +15,14 @@ from . import views
 router = DefaultRouter()
 #READ
 #Create
-router.register('opportunity', views.ResearchOpportunityViewSet)
 
+
+router.register('opportunity', views.ResearchOpportunityViewSet)
+router.register('applications', views.ApplicationView)
 router.register('', views.ProfessorView)
+
+
+# router.register('opportunity/apply', StudentApplicationView)
 
 # router.register('professor/<int: professor_id>/opportunity/create', views.ResearchOpportunityViewSet)
 
@@ -37,26 +42,9 @@ urlpatterns = [
 
     # path('csrf/', views.csrf, name='csrf'),
     
-    # test
-    # path('dashboard/', views.ProfessorProfileView.as_view(), name='professor-dashboard'),
-    # path('dashboard/', views.ProfessorProfileView.as_view(), name='dashboard'),
-
-    # path('opportunity', views.ResearchOpportunityViewSet.as_view({'get': 'list'}), name='opportunity'),
-
-    # path('createlogin/', views.ProfessorLoginView.as_view(), name='professor-login'),
-
-    # test
-    # path('/', views.ProfessorView.as_view(), name='professor_view')
-    # test
-    # path('list-research-opportunities/', views.list_research_opportunities, name='list_research_opportunities'),
-    # path('create-research-opportunity/', views.create_research_opportunity, name='create_research_opportunity'),
-    # path('update-research-opportunity/<int:opportunity_id>/', views.update_research_opportunity, name='update_research_opportunity'),
-    # path('delete-research-opportunity/<int:opportunity_id>/', views.delete_research_opportunity, name='delete_research_opportunity'),
-    # test ends
     
-    # # Non-API routes
-    # path('professor/', views.professor_dashboard, name='professor_dashboard'),  # Non-API professor dashboard
-    # path('professor/opportunity/create/', views.create_professor_profile, name='create_professor_profile'),  # Non-API profile creation
+    
+    
 ]
 
 # urlpatterns = [

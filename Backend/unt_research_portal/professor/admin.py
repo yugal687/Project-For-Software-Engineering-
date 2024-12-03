@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Professor, ResearchOpportunity, Student_Application
+from .models import Professor, ResearchOpportunity, StudentApplication
 
 # test
 from django.core.exceptions import ValidationError
@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.contrib import admin
 
 admin.site.register(ResearchOpportunity)
-admin.site.register(Student_Application)
+admin.site.register(StudentApplication)
 
 
 

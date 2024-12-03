@@ -92,6 +92,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'unt_research_portal.wsgi.application'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
+MEDIA_URL = '/media/'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

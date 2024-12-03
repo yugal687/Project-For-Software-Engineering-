@@ -108,15 +108,32 @@ class ResearchOpportunity(models.Model):
         """Return the tags as a list."""
         return self.research_tags.split(",") if self.research_tags else []
 
-class Student_Application(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="applications")
+# class Student_Application_For_Professor(models.Model):
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="student_applications_for_professors")
+#     research_opportunity = models.ForeignKey(ResearchOpportunity, on_delete=models.CASCADE, related_name="applications")
+#     applied_at = models.DateTimeField(auto_now_add=True)
+#     resume = models.FileField(upload_to='student_resumes/', null=True, blank=True)  # Resume upload
+    
+
+#     def __str__(self):
+#         return f"{self.student.first_name} {self.student.last_name} applied for {self.research_opportunity.title}"
+
+class StudentApplication(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="student_applications_for_professors")
     research_opportunity = models.ForeignKey(ResearchOpportunity, on_delete=models.CASCADE, related_name="applications")
     applied_at = models.DateTimeField(auto_now_add=True)
-    
+    resume = models.FileField(upload_to='student_resumes/', null=True, blank=True)  # Resume upload
+    status = models.CharField(
+        max_length=20,
+        choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')],
+        default='pending'
+    )
     
 
     def __str__(self):
         return f"{self.student.first_name} {self.student.last_name} applied for {self.research_opportunity.title}"
+    
+   
 
 
 

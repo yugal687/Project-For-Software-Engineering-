@@ -3,23 +3,14 @@
 # from rest_framework import status
 # from .models import Student
 # from .serializers import StudentLoginSerializer
-# from professor.views import ResearchOpportunityViewSet
-# # from professor.serializers import ResearchOpportunitySerializers
-# from professor.models import ResearchOpportunity, Professor
-# from rest_framework_simplejwt.tokens import RefreshToken
-# from .authentication import StudentBackend
 
-# class Apply(APIView):
+
+# class StudentLoginView(APIView):
 #     def post(self, request):
 #         serializer = StudentLoginSerializer(data=request.data)
 #         if serializer.is_valid():
 #             student = serializer.validated_data
-#             # professor = serializer.validated_data
-#             research_posts = ResearchOpportunity.objects.values(
-#                 'id', 'title', 'description', 'posted_on', 'deadline', 
-#                 'is_active', 'required_skills', 'research_tags', 
-#                 'max_applications', 'current_applications'
-#             )
+
 #             # Prepare student profile data
 #             student_data = {
 #                 "id": student.id,
@@ -44,92 +35,93 @@
 #             return Response({
 #                 "message": "Login successful",
 #                 "student": student_data,
-#                 "opportunities": research_posts
 #             }, status=status.HTTP_200_OK)
 
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
-# class StudentLoginView(APIView):
+# Using session authentication and without searlizers
+
+# from django.views import View
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# from django.utils.decorators import method_decorator
+# from .models import Student
+# import json
+# from django.middleware.csrf import get_token
+
+
+# @method_decorator(csrf_exempt, name='dispatch')
+# class StudentLoginView(View):
 #     def post(self, request):
-#             email = request.data.get('email')
-#             password = request.data.get('password')
+#         try:
+#             data = json.loads(request.body)
+#             email = data.get("email")
+#             password = data.get("password")
 
-#             user = StudentBackend.authenticate(request, email=email, password=password)
+#             # Validate credentials
+#             student = Student.objects.get(email=email)
+#             if student.password != password:  # Replace with hashed password validation
+#                 return JsonResponse({"error": "Invalid email or password"}, status=401)
 
-#             if user:
-#                 # Generate JWT tokens
-#                 refresh = RefreshToken.for_user(user)
-#                 return Response({
-#                     'refresh': str(refresh),
-#                     'access': str(refresh.access_token),
-#                     'user': {
-#                         'email': user.email,
-#                         'name': user.first_name,
-#                     },
-#                     'id': user.id,
-                    
-#                 }, status=status.HTTP_200_OK)
-#             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+#             # Create session
+#             request.session['student_id'] = student.id
+#             request.session['student_email'] = student.email
 
+#             return JsonResponse({"message": "Login successful", "student_email": student.email})
+#         except Student.DoesNotExist:
+#             return JsonResponse({"error": "Invalid email or password"}, status=401)
+#         except Exception as e:
+#             return JsonResponse({"error": str(e)}, status=400)
+        
+        
+# class StudentDashboardView(View):
+#     def get(self, request):
+#         student_id = request.session.get('student_id')
+#         if not student_id:
+#             return JsonResponse({"error": "Not authenticated. Please log in first."}, status=401)
 
-
-
-
-#     # via serializer
-#     # def post(self, request):
-#     #     serializer = StudentLoginSerializer(data=request.data)
-#     #     if serializer.is_valid():
-#     #         student = serializer.validated_data
-#     #         # professor = serializer.validated_data
-#     #         research_posts = ResearchOpportunity.objects.values(
-#     #             'id', 'title', 'description', 'posted_on', 'deadline', 
-#     #             'is_active', 'required_skills', 'research_tags', 
-#     #             'max_applications', 'current_applications'
-#     #         )
-#     #         # Prepare student profile data
-#     #         student_data = {
-#     #             "id": student.id,
-#     #             "first_name": student.first_name,
-#     #             "last_name": student.last_name,
-#     #             "email": student.email,
-#     #             "phone_number": student.phone_number,
-#     #             "year": student.year,
-#     #             "address": student.address,
-#     #             "resume": student.resume.url if student.resume else None,
-#     #             "profile_picture": student.profile_picture.url if student.profile_picture else None,
-#     #             "skills": student.skills,
-#     #             "gpa": student.gpa,
-#     #             "major": student.major,
-#     #             "graduation_year": student.graduation_year,
-#     #             "certifications": student.certifications,
-#     #             "linked_in_profile": student.linked_in_profile,
-#     #             "portfolio_website": student.portfolio_website,
-#     #             "github_profile": student.github_profile,
-#     #         }
-
-#     #         return Response({
-#     #             "message": "Login successful",
-#     #             "student": student_data,
-#     #             "opportunities": research_posts
-#     #         }, status=status.HTTP_200_OK)
-
-#     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         try:
+#             student = Student.objects.get(id=student_id)
+#             return JsonResponse({
+#                 "message": f"Welcome, {student.first_name}!",
+#                 "data": {
+#                     "email": student.email,
+#                     "name": f"{student.first_name} {student.last_name}",
+#                     "major": student.major,
+#                     "gpa": student.gpa,
+#                 },
+#             })
+#         except Student.DoesNotExist:
+#             return JsonResponse({"error": "Student not found"}, status=404)
 
 
-# Binod's Code for Student Views
+# class StudentLogoutView(View):
+#     def post(self, request):
+#         if 'student_id' in request.session:
+#             request.session.flush()  # Clears the session
+#             return JsonResponse({"message": "Logged out successfully."})
+#         return JsonResponse({"error": "No active session found."}, status=400)
+    
+
+# class CSRFTokenView(View):
+#     def get(self, request):
+#         csrf_token = get_token(request)
+#         return JsonResponse({"csrfToken": csrf_token})
+
+
+
 # Using session and searilizer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import viewsets
-
 from rest_framework import status
-from .serializers import StudentLoginSerializer, StudentSerializer, ResearchOpportunityStudentSerializer
-from .models import Student
+from .serializers import StudentApplicationSerializer, StudentLoginSerializer, StudentSerializer, ResearchOpportunityStudentSerializer
+from .models import Student, StudentApplication
 from django.middleware.csrf import get_token
 from professor.models import ResearchOpportunity
-from professor.serializers import ResearchOpportunitySerializer
+from professor.serializers import ApplicationSerializer, ResearchOpportunitySerializer
+
 
 
 class StudentLoginView(APIView):
@@ -141,21 +133,15 @@ class StudentLoginView(APIView):
             # Save student info in session
             request.session['student_id'] = student.id
             request.session['student_email'] = student.email
-            # request.session.save()
+            request.session.save()
+            
+            print("Session Data:", request.session.items())
 
             student_data = StudentSerializer(student).data
             return Response({
                 "message": "Login successful",
                 "student": student_data
             }, status=status.HTTP_200_OK)
-        
-            # response.set_cookie(
-            #     key='sessionid',
-            #     value=request.session.session_key,
-            #     httponly=True,  # Secure the cookie
-            #     samesite='Lax',  # Adjust for frontend-backend domains
-            # )
-            # return response
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -183,9 +169,6 @@ class StudentDashboardView(APIView):
         except Student.DoesNotExist:
             return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
 
-class StudentView(viewsets.ModelViewSet):
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
 # class StudentDashboardView(APIView):
 #     def get(self, request):
 #         student_id = request.session.get('student_id')
@@ -212,17 +195,35 @@ class StudentLogoutView(APIView):
 
 
 
+# class ApplyResearchOpportunityView(APIView):
+#     def post(self, request):
+#         student_id = request.session.get('student_id')  # Get student from session
+#         if not student_id:
+#             return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
+
+#         opportunity_id = request.data.get('research_opportunity')
+#         if not opportunity_id:
+#             return Response({"error": "Research opportunity ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             research_opportunity = ResearchOpportunity.objects.get(id=opportunity_id)
+#         except ResearchOpportunity.DoesNotExist:
+#             return Response({"error": "Research opportunity not found."}, status=status.HTTP_404_NOT_FOUND)
+
+#         # Check if student has already applied
+#         if Student_Application.objects.filter(student_id=student_id, research_opportunity=research_opportunity).exists():
+#             return Response({"error": "You have already applied for this research opportunity."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Create application
+#         application = Student_Application.objects.create(student_id=student_id, research_opportunity=research_opportunity)
+#         serializer = ApplicationSerializer(application)
+#         return Response({"message": "Application submitted successfully", "application": serializer.data}, status=status.HTTP_201_CREATED)
+
 class CSRFTokenView(APIView):
     def get(self, request):
         csrf_token = get_token(request)
         return Response({"csrfToken": csrf_token})
 
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.http import JsonResponse
-
-@ensure_csrf_cookie
-def get_csrf_token(request):
-    return JsonResponse({"message": "CSRF token set"})
 
 
 # # Using JWT tokens for authentication
@@ -291,3 +292,130 @@ def get_csrf_token(request):
 #             "message": f"Welcome, {student.first_name}!",
 #             "data": serializer.data
 #         }, status=status.HTTP_200_OK)
+
+
+
+
+import os
+from docx import Document
+from PyPDF2 import PdfReader
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Student, StudentApplication
+from professor.models import ResearchOpportunity
+
+
+class ResumeAnalyzer:
+    @staticmethod
+    def extract_text(file_path):
+        """Extract text from a resume file."""
+        _, extension = os.path.splitext(file_path)
+
+        if extension == ".docx":
+            doc = Document(file_path)
+            return " ".join([para.text for para in doc.paragraphs])
+        elif extension == ".pdf":
+            reader = PdfReader(file_path)
+            return " ".join([page.extract_text() for page in reader.pages])
+        else:
+            raise ValueError("Unsupported file format. Please upload a .docx or .pdf file.")
+
+    @staticmethod
+    def analyze_resume(file_path, required_keywords):
+        """Analyze the resume and return a score."""
+        text = ResumeAnalyzer.extract_text(file_path)
+
+        # Tokenize and clean text
+        tokens = word_tokenize(text.lower())
+        stop_words = set(stopwords.words('english'))
+        filtered_tokens = [word for word in tokens if word.isalnum() and word not in stop_words]
+
+        # Match keywords and calculate score
+        matches = [word for word in filtered_tokens if word in required_keywords]
+        score = len(matches) / len(required_keywords) * 100
+        return score
+
+class ApplyResearchOpportunityView(APIView):
+    def post(self, request):
+        student_id = request.session.get('student_id')
+        if not student_id:
+            return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        opportunity_id = request.data.get('research_opportunity')
+        resume_file = request.FILES.get('resume') 
+        if not opportunity_id:
+            return Response({"error": "Research opportunity ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            research_opportunity = ResearchOpportunity.objects.get(id=opportunity_id)
+        except ResearchOpportunity.DoesNotExist:
+            return Response({"error": "Research opportunity not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if student has already applied
+        if StudentApplication.objects.filter(student_id=student_id, research_opportunity=research_opportunity).exists():
+            return Response({"error": "You have already applied for this research opportunity."}, status=status.HTTP_400_BAD_REQUEST)
+
+        
+        # Validate resume upload
+        if not resume_file:
+            return Response({"error": "Resume upload is required to apply."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Save the uploaded resume temporarily
+        student = Student.objects.get(id=student_id)
+        application = StudentApplication.objects.create(
+            student=student,
+            research_opportunity=research_opportunity,
+            resume=resume_file
+        )
+        # Analyze the resume
+        resume_path = application.resume.path
+        required_keywords = research_opportunity.required_skills.split(",")  # Assuming skills are comma-separated
+        score = ResumeAnalyzer.analyze_resume(resume_path, required_keywords)
+
+        # Validate the score threshold
+        threshold = 70  # Example threshold
+        if score < threshold:
+            application.delete()  # Cleanup if the resume doesn't meet the threshold
+            return Response({"error": f"Resume score too low ({score:.2f}%). Minimum required: {threshold}%."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save the score to the application
+        application.resume_score = score
+        application.save()
+
+        return Response({
+            "message": "Application submitted successfully",
+            "application_id": application.id,
+            "score": score
+        }, status=status.HTTP_201_CREATED)
+
+from rest_framework import viewsets
+
+class StudentView(viewsets.ModelViewSet):
+    # research_opportunities = ResearchOpportunity.objects.filter(is_active=True)
+    # research_serializer = ResearchOpportunityStudentSerializer(research_opportunities, many=True)
+
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+# class StudentApplicationView(viewsets.ModelViewSet):
+#     # research_opportunities = ResearchOpportunity.objects.filter(is_active=True)
+#     # research_serializer = ResearchOpportunityStudentSerializer(research_opportunities, many=True)
+
+#     queryset = StudentApplication.objects.all()
+#     serializer_class = StudentApplicationSerializer
+
+class StudentApplicationView(viewsets.ModelViewSet):
+    # research_opportunities = ResearchOpportunity.objects.filter(is_active=True)
+    # research_serializer = ResearchOpportunityStudentSerializer(research_opportunities, many=True)
+
+    queryset = StudentApplication.objects.all()
+    serializer_class = ApplicationSerializer
+
+class AllResearchOpportunitiesView(APIView):
+    def get(self, request):
+        research_opportunities = ResearchOpportunity.objects.filter(is_active=True)  # Show only active opportunities
+        serializer = ResearchOpportunityStudentSerializer(research_opportunities, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

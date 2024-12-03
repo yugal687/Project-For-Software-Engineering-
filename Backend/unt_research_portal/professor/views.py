@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from .models import Professor, ResearchOpportunity, Student_Application
+from .models import Professor, ResearchOpportunity, StudentApplication
 from .serializers import ProfessorSerializer, ResearchOpportunitySerializer, ApplicationSerializer, ProfessorDashboardSerializer
 from rest_framework.permissions import IsAuthenticated
 # from rest_framework.decorators import permission_classes
@@ -32,10 +32,7 @@ class ProfessorView(viewsets.ModelViewSet):
     queryset = Professor.objects.all()
     serializer_class = ProfessorSerializer
 
-    # def get_serializer_class(self):
-    #     if self.action == 'retrieve':
-    #         return ProfessorDetailSerializer
-    #     return super().get_serializer_class()
+    
 
 
 # @permission_classes([IsAuthenticated])
@@ -53,7 +50,7 @@ class ResearchOpportunityViewSet(viewsets.ModelViewSet):
 
         # Check if the student has already applied
         student = request.user  # Assuming the logged-in user is a student
-        if Student_Application.objects.filter(student=student, research_opportunity=research_opportunity).exists():
+        if StudentApplication.objects.filter(student=student, research_opportunity=research_opportunity).exists():
             return Response({"error": "You have already applied for this opportunity"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validate if the deadline has passed
@@ -61,7 +58,7 @@ class ResearchOpportunityViewSet(viewsets.ModelViewSet):
             return Response({"error": "The application deadline has passed"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create a new application and link it to the research opportunity
-        application = Student_Application.objects.create(
+        application = StudentApplication.objects.create(
             student=student,
             research_opportunity=research_opportunity,
         )
@@ -79,8 +76,15 @@ class ResearchOpportunityViewSet(viewsets.ModelViewSet):
 
 # test
 class ApplicationView(viewsets.ModelViewSet):
-    queryset = Student_Application.objects.all()
+    queryset = StudentApplication.objects.all()
     serializer_class = ApplicationSerializer
+
+# class StudentApplicationView(viewsets.ModelViewSet):
+#     # research_opportunities = ResearchOpportunity.objects.filter(is_active=True)
+#     # research_serializer = ResearchOpportunityStudentSerializer(research_opportunities, many=True)
+
+#     queryset = StudentApplication.objects.all()
+#     serializer_class = StudentApplicationSerializer
 
 
 
@@ -119,22 +123,6 @@ def get_professor_profile(request):
         return JsonResponse({'error': 'User not found'}, status=404)
     
     
-# from django.contrib.auth.decorators import login_required
-
-# # @login_required
-# def get_professor_profile(request):
-#     user = request.user  # Retrieves the authenticated user object
-#     if user.is_authenticated:  # Check if the user is authenticated
-#         return JsonResponse({'email': user.email, 'name': user.first_name})
-#     else:
-#         return JsonResponse({'error': 'User not found'}, status=404)
-
-# class ProfessorProfileView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-#         serializer = ProfessorSerializer(request.user)
-#         return Response(serializer.data)
 
 
 class ProfessorDashboardAPIView(APIView):
@@ -172,6 +160,60 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
+class ManageApplicationsView(APIView):
+    def get(self, request):
+        professor_id = request.session.get('professor_id')  # Get professor from session
+        if not professor_id:
+            return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
+        print(f"Validated Professor ID: {professor_id}")
+
+        applications = StudentApplication.objects.filter(research_opportunity__professor_id=professor_id)
+        serializer = ApplicationSerializer(applications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, application_id):
+        professor_id = request.session.get('professor_id')
+        if not professor_id:
+            return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            application = StudentApplication.objects.get(id=application_id, research_opportunity__professor_id=professor_id)
+        except StudentApplication.DoesNotExist:
+            return Response({"error": "Application not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        action = request.data.get('action')  # Accept or Reject
+        if action == 'accept':
+            application.status = 'accepted'
+        elif action == 'reject':
+            application.status = 'rejected'
+        else:
+            return Response({"error": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
+        application.save()
+        return Response({"message": f"Application {action}ed successfully."}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+# from django.contrib.auth.decorators import login_required
+
+# # @login_required
+# def get_professor_profile(request):
+#     user = request.user  # Retrieves the authenticated user object
+#     if user.is_authenticated:  # Check if the user is authenticated
+#         return JsonResponse({'email': user.email, 'name': user.first_name})
+#     else:
+#         return JsonResponse({'error': 'User not found'}, status=404)
+
+# class ProfessorProfileView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         serializer = ProfessorSerializer(request.user)
+#         return Response(serializer.data)
 
 
 # # test from binod gpt
