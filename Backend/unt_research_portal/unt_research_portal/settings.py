@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'research',
     'professor',
     'students',
+    'coi_staff',
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',

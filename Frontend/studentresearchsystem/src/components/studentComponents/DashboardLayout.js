@@ -6,35 +6,12 @@ import axios from "axios";
 import Image from "next/image";
 import logo from "@/assets/unt-logo.png";
 
-// export async function fetchStudentDashboard() {
-//   try {
-//     const response = await axios.get(
-//       "http://localhost:8000/api/student/dashboard/",
-//       {
-//         withCredentials: true, // Include cookies in requests
-//       }
-//     );
-
-//     return response.data; // Dashboard data
-//   } catch (error) {
-//     console.error("Error fetching dashboard data:", error.response.data);
-//     throw error.response.data;
-//   }
-// }
-
 const StudentDashboard = ({ children }) => {
-  const [data, setData] = useState("");
+  // const [data, setData] = useState("");
   const [error, setError] = useState(null);
   const router = useRouter();
   const params = useParams();
   const pathname = usePathname();
-
-  // const token = params.token;
-  // const { id } = router.query.id;
-  // const id = localStorage.getItem("user_id");
-  //   const token = localStorage.getItem("access-token");
-  //   const id = localStorage.getItem("user_id");
-  //   //
 
   // useEffect(() => {
   // if (!token) {
@@ -194,7 +171,8 @@ const StudentDashboard = ({ children }) => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Hello {data.first_name} {data.last_name}
+                  Hello
+                  {/* {data.first_name} {data.last_name} */}
                 </button>
                 <ul className="dropdown-menu">
                   <li>

@@ -32,11 +32,6 @@ const FacultyLogin = () => {
       // Store user data in state or localStorage if needed
       console.log(response);
       router.push("/student/dashboard");
-
-      // router.push({
-      //   pathname: "student/dashboard",
-      //   query: { data: JSON.stringify(response) },
-      // });
     } else {
       setError("Invalid credentials. Please try again.");
     }

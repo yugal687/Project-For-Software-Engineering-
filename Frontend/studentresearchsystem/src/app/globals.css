@@ -21,7 +21,13 @@
   border-left: 2px solid #fff;
 }
 .ant-progress-inner {
-  width: 218px;
+  width: 218px!important;
   height: 220px;
+  font-size: 48px;
+}
+
+.ant-progress-inner {
+  width: 400px !important;
+  height: 400px;
   font-size: 48px;
 }

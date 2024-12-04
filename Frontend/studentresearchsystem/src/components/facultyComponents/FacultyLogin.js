@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Navbar from "../Navbar";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -61,66 +62,69 @@ export default function Login() {
     //     </form>
     //   </div>
     // );
-    <div
-      className="d-flex justify-content-center align-items-center min-vh-100"
-      style={{ backgroundColor: "#006a00" }}
-    >
-      <div className="card p-4" style={{ width: "100%", maxWidth: "400px" }}>
-        <h3 className="text-center mb-4" style={{ color: "#006a00" }}>
-          Faculty Login
-        </h3>
-        <form onSubmit={handleLogin}>
-          {/* Email Field */}
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
+    <>
+      <Navbar />
+      <div
+        className="d-flex justify-content-center align-items-center min-vh-100"
+        style={{ backgroundColor: "#006a00" }}
+      >
+        <div className="card p-4" style={{ width: "100%", maxWidth: "400px" }}>
+          <h3 className="text-center mb-4" style={{ color: "#006a00" }}>
+            Faculty Login
+          </h3>
+          <form onSubmit={handleLogin}>
+            {/* Email Field */}
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">
+                Email
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
 
-          {/* Password Field */}
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              type="password"
-              className="form-control"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-            />
-          </div>
+            {/* Password Field */}
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">
+                Password
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+              />
+            </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="btn primary-background primary-color w-100"
-            style={{ backgroundColor: "#006a00", color: "#ffffff" }}
-          >
-            Login
-          </button>
-        </form>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="btn primary-background primary-color w-100"
+              style={{ backgroundColor: "#006a00", color: "#ffffff" }}
+            >
+              Login
+            </button>
+          </form>
 
-        <div className="text-center mt-3">
-          <p className="primary-color">Don't have an account? </p>
-          <div>
-            <a className="primary-color" href="/faculty/register">
-              Register here
-            </a>
+          <div className="text-center mt-3">
+            <p className="primary-color">Don't have an account? </p>
+            <div>
+              <a className="primary-color" href="/faculty/register">
+                Register here
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -107,7 +107,7 @@ const StudentsApplication = () => {
                           </div>
                           <form onSubmit={handleSubmit}>
                             <select
-                              class="form-select"
+                              class="form-select w-auto"
                               aria-label="Default select example"
                               value={status}
                               onChange={handleStatusChange}
@@ -178,7 +178,7 @@ const StudentsApplication = () => {
                             data-bs-toggle="modal"
                             data-bs-target="#exampleModal"
                             onClick={() => handleApplyClick(d.id)}
-                            class="btn card-link"
+                            class="btn btn-success mt-2 card-link"
                           >
                             Submit Status
                           </button>

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Navbar from "../Navbar";
 
-export default function Login() {
+export default function mLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -25,10 +25,10 @@ export default function Login() {
       // Save the JWT token to local storage
       // localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("user_id", response.data.student.id);
-      localStorage.setItem("user_id", response.data.student.id);
-      console.log(response.data.student.id);
+      localStorage.setItem("access_token", response.data.access);
+      console.log(response);
 
-      //   setData(response.data);
+      setData(response.data);
       //   professor_id = response.data.professor_id;
       const path = "/student/dashboard";
       router.push(path);

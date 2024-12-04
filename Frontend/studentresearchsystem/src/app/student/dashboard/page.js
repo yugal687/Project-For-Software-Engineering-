@@ -3,13 +3,15 @@ import React, { useState, useEffect } from "react";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import Dashboard from "@/components/studentComponents/DashboardLayout";
 import axios from "axios";
-import Image from "next/image";
+// import Image from "next/image";
 
 const page = () => {
   const [data, setData] = useState("");
+  const [dataStudent, setStudentData] = useState({});
+
   const [error, setError] = useState(null);
   const router = useRouter();
-  const get_id = localStorage.getItem("user_id");
+  // const id = localStorage.getItem("user_id");
   // const params = useParams();
   // const token = params.token;
   // const { id } = router.query.id;
@@ -24,35 +26,60 @@ const page = () => {
   //   console.log("CSRF Token:", document.cookie); // Verify cookie
   // }
 
-  async function makeAuthenticatedRequest() {
-    const response = await axios.get(
-      `http://127.0.0.1:8000/api/student/${get_id}`
-    );
-    // const data = await response.json();
-    setData(response.data);
-    // console.log("Dashboard Data:", data);
-  }
-  async function get_all_opportunities() {
-    const response = await axios.get(
-      "http://127.0.0.1:8000/api/student/get-active-opportunities"
-    );
-    setData(response.data);
-  }
+  // async function makeAuthenticatedRequest() {
+  //   const response = await axios.get(
+  //     `http://127.0.0.1:8000/api/student/${get_id}`
+  //   );
+  //   // const data = await response.json();
+  //   setStudentData(response.data);
+  //   // console.log("Dashboard Data:", data);
+  // }
+  // async function get_all_opportunities() {
+  //   const response = await axios.get(
+  //     "http://127.0.0.1:8000/api/student/get-active-opportunities"
+  //   );
+  //   setData(response.data);
+  // }
 
   useEffect(() => {
-    makeAuthenticatedRequest();
-    get_all_opportunities();
+    // makeAuthenticatedRequest();
+    // get_all_opportunities();
+    const token = localStorage.getItem("access-token");
+    const id = localStorage.getItem("user_id");
+
+    const fetchData = async () => {
+      // setIsLoading(true);
+      console.log(id);
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/student/${id}/`
+          // {
+          //   headers: { Authorization: `Token ${token}` }, // Forward the authorization header
+          // }
+        );
+        console.log(response);
+        // const data = await response.json();
+
+        setStudentData(response.data);
+      } catch (error) {
+        setError(error);
+      } finally {
+        // setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
     <div>
-      <Dashboard data={data}>
+      <Dashboard>
         {/* Profile Information */}
         <div className="pt-1 pb-2 mb-3 border-bottom px-2">
           Student Dashboard
         </div>
         <section className="mb-4">
-          <h4>Profile Information</h4>
+          <h4>Profile Information:</h4>
           <div className="card p-3 mb-4">
             <div className="row">
               <div className="col-md-6">
@@ -65,42 +92,44 @@ const page = () => {
                 </div>
                 <p>
                   <strong>Name: </strong>
-                  {data.full_name}
+                  {dataStudent.full_name}
                 </p>
                 <p>
-                  <strong>Email:</strong> {data.email}
+                  <strong>Email:</strong> {dataStudent.email}
                 </p>
                 <p>
-                  <strong>Major:</strong> {data.major}
+                  <strong>Major:</strong> {dataStudent.major}
                 </p>
                 <p>
-                  <strong>Graduation Year:</strong> {data.graduation_year}
+                  <strong>Graduation Year:</strong>{" "}
+                  {dataStudent.graduation_year}
                 </p>
                 <p>
-                  <strong>Certification:</strong> {data.certification}
+                  <strong>Certification:</strong> {dataStudent.certification}
                 </p>
                 <p>
-                  <strong>Skills:</strong> {data.skills}
+                  <strong>Skills:</strong> {dataStudent.skills}
                 </p>
               </div>
               <div className="col-md-6">
                 <p>
-                  <strong>Year:</strong> {data.year}
+                  <strong>Year:</strong> {dataStudent.year}
                 </p>
                 <p>
                   <strong>University:</strong> University of North Texas
                 </p>
                 <p>
-                  <strong>GPA:</strong> {data.gpa}
+                  <strong>GPA:</strong> {dataStudent.gpa}
                 </p>
                 <p>
-                  <strong>LinkedIn:</strong> {data.linked_in_profile}
+                  <strong>LinkedIn:</strong> {dataStudent.linked_in_profile}
                 </p>
                 <p>
-                  <strong>Github:</strong> {data.github_profile}
+                  <strong>Github:</strong> {dataStudent.github_profile}
                 </p>
                 <p>
-                  <strong>Protfolio Website:</strong> {data.portfolio_website}
+                  <strong>Protfolio Website:</strong>{" "}
+                  {dataStudent.portfolio_website}
                 </p>
               </div>
             </div>

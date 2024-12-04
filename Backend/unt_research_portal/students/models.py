@@ -47,7 +47,7 @@ class StudentApplication(models.Model):
     research_opportunity = models.ForeignKey('professor.ResearchOpportunity', on_delete=models.CASCADE, related_name="student_applications")
     applied_at = models.DateTimeField(auto_now_add=True)
     resume = models.FileField(upload_to='student_resumes/', null=True, blank=True)  # Resume upload
-    
+    resume_score= models.FloatField(null=True, blank=True)
     
 
     def __str__(self):

@@ -15,6 +15,7 @@ urlpatterns = [
     # path('', include('research.urls')),
     path('api/professor/', include('professor.urls')),
     path('api/student/', include('students.urls')),
+    path('api/coi-staff/', include('coi_staff.urls')),
 ]
 
 

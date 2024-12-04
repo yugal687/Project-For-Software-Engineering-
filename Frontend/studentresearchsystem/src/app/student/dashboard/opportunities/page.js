@@ -26,6 +26,7 @@ const page = () => {
     formData.append("student", studentName);
     formData.append("research_opportunity", researchOpportunity);
     formData.append("resume", resume);
+
     try {
       const response = await fetch(
         "http://127.0.0.1:8000/api/student/opportunity/apply/",
@@ -40,7 +41,10 @@ const page = () => {
 
       if (response.ok) {
         alert("Form submitted successfully");
-        router.push("/student/dashboard/opportunities/score");
+        const modalElement = document.getElementById("exampleModal");
+        const modal = new window.bootstrap.Modal(modalElement);
+        modal.hide(); // Close the modal
+
         setFormData({
           student: "",
           research_opportunity: "",
@@ -61,12 +65,12 @@ const page = () => {
   const get_score = async (e) => {
     e.preventDefault();
     const formData1 = new FormData();
-    formData1.append("required_keywoards_front_end", rk);
-    // formData1.append("research_opportunity", researchOpportunity);
+    formData1.append("student", studentName);
+    formData1.append("research_opportunity", researchOpportunity);
     formData1.append("resume", resume);
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/student/my/getscore/",
+        "http://127.0.0.1:8000/api/student/application/getscore/",
         {
           method: "POST",
           //   headers: {
@@ -76,9 +80,18 @@ const page = () => {
         }
       );
 
+      const v = await response.json();
+      console.log(v);
+
       if (response.ok) {
         alert("Form submitted successfully");
-        console.log(response);
+        console.log(v.score);
+        console.log(v.Message);
+        // const modalElement = document.getElementById("exampleModal2");
+        // const modal = new window.bootstrap.Modal(modalElement);
+        // modal.hide(); // Close the modal
+        localStorage.setItem("user_score", v.score);
+        router.push("/student/dashboard/opportunities/score");
 
         // setFormData({
         //   student: "",
@@ -117,6 +130,7 @@ const page = () => {
     setResearchOpportunity(opportunityId); // Set the research opportunity id when Apply button is clicked
   };
   useEffect(() => {
+    // get_score();
     get_all_opportunities();
     get_student_detail();
   }, []);
@@ -135,12 +149,12 @@ const page = () => {
                     <div className="col-md-4 mb-4">
                       <div className="card h-100">
                         <div className="card-body">
-                          <h5 className="card-title">Title: {i.title}</h5>
+                          <h6 className="card-title">Title: {i.title}</h6>
                           <p className="card-text">
-                            Description:{i.description}
+                            Description: {i.description}
                           </p>
                           <p className="card-text">
-                            Posted by: {i.professor_name}
+                            <i>Posted by: {i.professor_name}</i>
                           </p>
                           <div className="d-flex">
                             <button
@@ -152,14 +166,15 @@ const page = () => {
                             >
                               Apply
                             </button>
-                            {/* <button
+                            <button
                               type="button"
                               class="btn btn-primary"
                               data-bs-toggle="modal"
                               data-bs-target="#exampleModal2"
+                              onClick={() => handleApplyClick(i.id)}
                             >
                               Get Score
-                            </button> */}
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -284,7 +299,7 @@ const page = () => {
                           <div class="modal-content">
                             <div class="modal-header">
                               <h5 class="modal-title" id="exampleModalLabel">
-                                Student Application
+                                Get your ATS Score
                               </h5>
                               <button
                                 type="button"
@@ -296,29 +311,9 @@ const page = () => {
                             <div class="modal-body">
                               <div className="container mt-5">
                                 <h2 className="text-center mb-4">
-                                  Student Application Form
+                                  Get your Score
                                 </h2>
                                 <form onSubmit={get_score}>
-                                  {/* Student Name Field */}
-
-                                  {/* Opportunity Name Field */}
-                                  <div className="mb-3">
-                                    <label
-                                      htmlFor="opportunityName"
-                                      className="form-label"
-                                    >
-                                      Related Skills
-                                    </label>
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      id="keywords"
-                                      value={data.required_skills}
-                                      onChange={(e) => setRK(e.target.value)}
-                                    />
-                                  </div>
-
-                                  {/* Resume Upload Field */}
                                   <div className="mb-3">
                                     <label
                                       htmlFor="resume"
@@ -338,7 +333,6 @@ const page = () => {
                                     />
                                   </div>
 
-                                  {/* Submit Button */}
                                   <div className="text-center">
                                     <button
                                       type="submit"

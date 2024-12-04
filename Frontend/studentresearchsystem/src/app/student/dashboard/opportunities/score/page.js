@@ -1,19 +1,17 @@
+"use client";
 import React from "react";
 import { Flex, Progress } from "antd";
 import StudentDashboard from "@/components/studentComponents/DashboardLayout";
 
-const page = () => (
-  <StudentDashboard>
-    <Flex
-      gap="small"
-      wrap
-      style={{
-        width: 400,
-      }}
-    >
-      <Progress size={300} type="dashboard" percent={75} />
-    </Flex>
-    <div>Your Resume matching score with Score is 75%</div>
-  </StudentDashboard>
-);
+const page = () => {
+  const score = localStorage.getItem("user_score");
+  return (
+    <StudentDashboard>
+      <Flex gap="small" wrap>
+        <Progress size={400} type="dashboard" percent={score} />
+      </Flex>
+      <div>Your Resume matching score with Score is {score}</div>
+    </StudentDashboard>
+  );
+};
 export default page;
