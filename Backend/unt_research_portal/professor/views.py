@@ -72,33 +72,33 @@ class ApplicationView(viewsets.ModelViewSet):
     queryset = Student_Application.objects.all()
     serializer_class = ApplicationSerializer
     
-    @action(detail=False, methods=['get'], url_path='filter')
-    def filter_applications(self, request):
-        """
-        Allow professors to filter applications by status or research opportunity.
-        """
-        professor_id = request.session.get('professor_id')
-        if not professor_id:
-            return Response({"error": "Not authenticated. Please log in first."}, status=401)
+    # @action(detail=False, methods=['get'], url_path='filter')
+    # def filter_applications(self, request):
+    #     """
+    #     Allow professors to filter applications by status or research opportunity.
+    #     """
+    #     professor_id = request.session.get('professor_id')
+    #     if not professor_id:
+    #         return Response({"error": "Not authenticated. Please log in first."}, status=401)
 
-        try:
-            professor = Professor.objects.get(id=professor_id)
-        except Professor.DoesNotExist:
-            return Response({"error": "Professor not found"}, status=404)
+    #     try:
+    #         professor = Professor.objects.get(id=professor_id)
+    #     except Professor.DoesNotExist:
+    #         return Response({"error": "Professor not found"}, status=404)
 
-        # Get query parameters for filtering
-        status = request.query_params.get('status', None)  # e.g., ?status=pending
-        opportunity_id = request.query_params.get('opportunity_id', None)  # e.g., ?opportunity_id=1
+    #     # Get query parameters for filtering
+    #     status = request.query_params.get('status', None)  # e.g., ?status=pending
+    #     opportunity_id = request.query_params.get('opportunity_id', None)  # e.g., ?opportunity_id=1
 
-        # Filter applications for the professor's research opportunities
-        queryset = Student_Application.objects.filter(research_opportunity__professor=professor)
-        if status:
-            queryset = queryset.filter(status=status)
-        if opportunity_id:
-            queryset = queryset.filter(research_opportunity_id=opportunity_id)
+    #     # Filter applications for the professor's research opportunities
+    #     queryset = Student_Application.objects.filter(research_opportunity__professor=professor)
+    #     if status:
+    #         queryset = queryset.filter(status=status)
+    #     if opportunity_id:
+    #         queryset = queryset.filter(research_opportunity_id=opportunity_id)
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return Response(serializer.data)
 
 
     # @action(detail=False, methods=['get'], url_path='filter')
@@ -118,25 +118,25 @@ class ApplicationView(viewsets.ModelViewSet):
     #     serializer = self.get_serializer(queryset, many=True)
     #     return Response(serializer.data)
 
-    @action(detail=True, methods=['patch'], url_path='update-status')
-    def update_status(self, request, pk=None):
+    # @action(detail=True, methods=['patch'], url_path='update-status')
+    # def update_status(self, request, pk=None):
         
-        """
-        Update the status of a specific application.
-        """
-        try:
-            application = self.get_object()
-            new_status = request.data.get('status', None)
+    #     """
+    #     Update the status of a specific application.
+    #     """
+    #     try:
+    #         application = self.get_object()
+    #         new_status = request.data.get('status', None)
 
-            if new_status not in ['pending', 'accepted', 'rejected']:
-                return Response({"error": "Invalid status"}, status=400)
+    #         if new_status not in ['pending', 'accepted', 'rejected']:
+    #             return Response({"error": "Invalid status"}, status=400)
 
-            application.status = new_status
-            application.save()
+    #         application.status = new_status
+    #         application.save()
 
-            return Response({"message": f"Application status updated to {new_status}"})
-        except Student_Application.DoesNotExist:
-            return Response({"error": "Application not found"}, status=404)
+    #         return Response({"message": f"Application status updated to {new_status}"})
+    #     except Student_Application.DoesNotExist:
+    #         return Response({"error": "Application not found"}, status=404)
 
 
 

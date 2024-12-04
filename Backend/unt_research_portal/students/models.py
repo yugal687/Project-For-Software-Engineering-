@@ -39,4 +39,23 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}  ({self.email})"
+    
+    
+class StudentApplication(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="student_applications")
+    research_opportunity = models.ForeignKey('professor.ResearchOpportunity', on_delete=models.CASCADE, related_name="student_applications")
+    applied_at = models.DateTimeField(auto_now_add=True)
+    resume = models.FileField(upload_to='student_resumes/', null=True, blank=True)  # Resume upload
+    student_unt_id = models.FileField(upload_to='coi_documents/student_ids/', null=True, blank=True)
+    transcript = models.FileField(upload_to='coi_documents/transcripts/', null=True, blank=True)
+    recommendation_letter = models.FileField(upload_to='coi_documents/recommendation_letters/', null=True, blank=True)
+    resume_score = models.FloatField(null=True, blank=True)  # Resume score
+    status = models.CharField(
+        max_length=20,
+        # choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')],
+        default='pending'
+    )
+
+    def __str__(self):
+        return f"{self.student.first_name} {self.student.last_name} applied for {self.research_opportunity.title}"
 

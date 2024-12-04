@@ -2,12 +2,16 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import COIStaff
+from .models import COIStaff, CoiDocuments
 from .serializers import COIStaffSerializer
 from django.contrib.auth.hashers import make_password, check_password
 from django.middleware.csrf import get_token
 
-
+from professor.models import ResearchOpportunity, Student_Application
+from professor.serializers import ResearchOpportunitySerializer, ApplicationSerializer
+from .serializers import CoiDocumentsSerializer
+from django.core.mail import send_mail
+from django.conf import settings
 # Create your views here.
 
 
@@ -33,11 +37,7 @@ class COIStaffLoginView(APIView):
             "staff_name": f"{staff.first_name} {staff.last_name}"
         })
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from professor.models import ResearchOpportunity, Student_Application
-from professor.serializers import ResearchOpportunitySerializer, ApplicationSerializer
+
 
 class COIStaffDashboardView(APIView):
     def get(self, request):
@@ -62,12 +62,16 @@ class COIStaffDashboardView(APIView):
         total_opportunities = ResearchOpportunity.objects.count()
         total_applications = Student_Application.objects.count()
         pending_applications = Student_Application.objects.filter(status='pending').count()
+        accepted_applications = Student_Application.objects.filter(status='accepted').count()
+        rejected_applications = Student_Application.objects.filter(status='rejected').count()
 
         return Response({
             "overview": {
                 "total_opportunities": total_opportunities,
                 "total_applications": total_applications,
                 "pending_applications": pending_applications,
+                "accepted_applications": accepted_applications,
+                "rejected_applications": rejected_applications,
             },
             "opportunities": opportunities_serializer.data,
             "applications": applications_serializer.data,
@@ -79,3 +83,67 @@ class CSRFTokenView(APIView):
     def get(self, request):
         csrf_token = get_token(request)
         return Response({"csrfToken": csrf_token})
+    
+    
+
+class ManageDocumentsView(APIView):
+    def get(self, request):
+        """Retrieve documentation status for all accepted applications."""
+        accepted_applications = Student_Application.objects.filter(status="accepted")
+        coi_documents = CoiDocuments.objects.filter(student__in=[app.student for app in accepted_applications])
+
+        serializer = CoiDocumentsSerializer(coi_documents, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        """Create or update documentation for a student."""
+        serializer = CoiDocumentsSerializer(data=request.data)
+        if serializer.is_valid():
+            # Create or update the document record
+            document, created = CoiDocuments.objects.update_or_create(
+                student_id=serializer.validated_data['student'].id,
+                research_opportunity_id=serializer.validated_data['research_opportunity'].id,
+                defaults=serializer.validated_data
+            )
+            
+        # Send notification if status is 'pending'
+            if serializer.validated_data.get('status') == 'pending':
+                student_email = document.student.email
+                self.send_email_notification(
+                    email=student_email,
+                    student_name=f"{document.student.first_name} {document.student.last_name}",
+                    opportunity_title=document.research_opportunity.title
+                )    
+            return Response({"message": "Documentation updated successfully"}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    @staticmethod
+    def send_email_notification(email, student_name, opportunity_title):
+        """Send an email notification to the student."""
+        subject = "Reminder: Submit Required Documents"
+        message = f"""
+        Dear {student_name},
+
+        This is a reminder to submit your required documents for the research opportunity titled "{opportunity_title}".
+
+        Please ensure you submit the following documents:
+        - Consent Form
+        - Student Identification
+        - Transcript
+        - Recommendation Letters
+        - Non-Disclosure Agreement (NDA)
+
+        You can upload these documents through your student dashboard.
+
+        Thank you,
+        COI Staff
+        """
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            fail_silently=False
+        )

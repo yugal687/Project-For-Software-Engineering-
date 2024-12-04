@@ -91,11 +91,11 @@ class ResearchOpportunity(models.Model):
         return self.research_tags.split(",") if self.research_tags else []
 
 class Student_Application(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="applications")
-    research_opportunity = models.ForeignKey(ResearchOpportunity, on_delete=models.CASCADE, related_name="applications")
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="professor_applications")
+    research_opportunity = models.ForeignKey(ResearchOpportunity, on_delete=models.CASCADE, related_name="professor_applications")
     applied_at = models.DateTimeField(auto_now_add=True)
     resume = models.FileField(upload_to='student_resumes/', null=True, blank=True)  # Resume upload
-    # resume_score = models.FloatField(null=True, blank=True)  # Resume score
+    resume_score = models.FloatField(null=True, blank=True)  # Resume score
     status = models.CharField(
         max_length=20,
         choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')],
@@ -105,5 +105,5 @@ class Student_Application(models.Model):
     def __str__(self):
         return f"{self.student.first_name} {self.student.last_name} applied for {self.research_opportunity.title}"
     
-class ResumeScore(models.Model):
-    resume_score = models.FloatField(null=True, blank=True)
+# class ResumeScore(models.Model):
+#     resume_score = models.FloatField(null=True, blank=True)

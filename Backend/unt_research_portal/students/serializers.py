@@ -31,7 +31,7 @@
 # Using Session Authentication
 
 from rest_framework import serializers
-from .models import Student
+from .models import Student, StudentApplication
 from django.contrib.auth.hashers import make_password, check_password
 from professor.models import ResearchOpportunity
 
@@ -94,3 +94,13 @@ class StudentResumeSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'email', 'resume']  # Include resume field
 
 
+class ApplicationSerializer(serializers.ModelSerializer):
+    student_name = serializers.SerializerMethodField()
+    research_opportunity_title = serializers.CharField(source='research_opportunity.title', read_only=True)
+
+    class Meta:
+        model = StudentApplication
+        fields = "__all__"
+
+    def get_student_name(self, obj):
+        return f"{obj.student.first_name} {obj.student.last_name}"

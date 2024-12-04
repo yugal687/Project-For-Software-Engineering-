@@ -4,7 +4,8 @@ from django.db import models
 
 from django.db import models
 from django.contrib.auth.hashers import make_password
-from django.utils import timezone
+from students.models import Student
+from professor.models import ResearchOpportunity
 
 class COIStaff(models.Model):
     email = models.EmailField(unique=True)  # Unique email for authentication
@@ -36,5 +37,28 @@ class COIStaff(models.Model):
         """Activate or deactivate staff account."""
         self.is_active = not self.is_active
         self.save()
+        
+        
+class CoiDocuments(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="coi_documents")
+    research_opportunity = models.ForeignKey(ResearchOpportunity, on_delete=models.CASCADE, related_name="coi_documents")
+    
+    # # Documentation Fields
+    # consent_form = models.TextField(null=True, blank=True)  # Filled by COI staff
+    # nda_acknowledged = models.BooleanField(default=False)  # Student acknowledgment
+    student_unt_id = models.FileField(upload_to='coi_documents/student_ids/', null=True, blank=True)
+    transcript = models.FileField(upload_to='coi_documents/transcripts/', null=True, blank=True)
+    recommendation_letter = models.FileField(upload_to='coi_documents/recommendation_letters/', null=True, blank=True)
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+    ]
+    onboarding_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')  # Track overall status
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"COI Documents for {self.student.first_name} - {self.research_opportunity.title}"
 
     

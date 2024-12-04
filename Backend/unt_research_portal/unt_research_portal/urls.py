@@ -4,7 +4,8 @@ from django.urls import path, include
 from research import views
 from professor.views import ProfessorView
 from rest_framework import routers 
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 # router = routers.DefaultRouter
 
@@ -20,3 +21,5 @@ urlpatterns = [
 ]
 
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

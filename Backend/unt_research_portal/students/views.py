@@ -117,7 +117,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import StudentLoginSerializer, StudentSerializer, ResearchOpportunityStudentSerializer
-from .models import Student
+from .models import Student, StudentApplication
 from django.middleware.csrf import get_token
 from professor.models import ResearchOpportunity, Student_Application
 from professor.serializers import ApplicationSerializer
@@ -296,6 +296,8 @@ class CSRFTokenView(APIView):
 
 
 import os
+import nltk
+from rest_framework import viewsets
 from docx import Document
 from PyPDF2 import PdfReader
 from nltk.tokenize import word_tokenize
@@ -306,20 +308,32 @@ from rest_framework import status
 from .models import Student
 from professor.models import ResearchOpportunity, Student_Application
 
+nltk_data_dir = os.path.join(os.getcwd(), "nltk_data")
+nltk.data.path.append(r'C:\Users\Binod Tandan\AppData\Roaming\nltk_data')
+
 class ResumeAnalyzer:
     @staticmethod
     def extract_text(file_path):
         """Extract text from a resume file."""
         _, extension = os.path.splitext(file_path)
 
-        if extension == ".docx":
-            doc = Document(file_path)
-            return " ".join([para.text for para in doc.paragraphs])
-        elif extension == ".pdf":
-            reader = PdfReader(file_path)
-            return " ".join([page.extract_text() for page in reader.pages])
-        else:
-            raise ValueError("Unsupported file format. Please upload a .docx or .pdf file.")
+        try:
+            if extension == ".docx":
+                doc = Document(file_path)
+                extracted_text = " ".join([para.text for para in doc.paragraphs])
+            elif extension == ".pdf":
+                reader = PdfReader(file_path)
+                extracted_text = " ".join([page.extract_text() for page in reader.pages])
+            else:
+                raise ValueError("Unsupported file format. Please upload a .docx or .pdf file.")
+
+            if not extracted_text.strip():
+                raise ValueError("The resume file contains no readable text.")
+            
+            return extracted_text
+
+        except Exception as e:
+            raise ValueError(f"Error extracting text: {e}")
 
     @staticmethod
     def analyze_resume(file_path, required_keywords):
@@ -331,53 +345,73 @@ class ResumeAnalyzer:
         stop_words = set(stopwords.words('english'))
         filtered_tokens = [word for word in tokens if word.isalnum() and word not in stop_words]
 
+        # Ensure required keywords are lowercase
+        required_keywords = [kw.lower().strip() for kw in required_keywords if kw.strip()]
+
         # Match keywords and calculate score
         matches = [word for word in filtered_tokens if word in required_keywords]
+        if not required_keywords:
+            raise ValueError("No required keywords provided for analysis.")
+        
         score = len(matches) / len(required_keywords) * 100
         return score
 
+
+
 class ApplyResearchOpportunityView(APIView):
     def post(self, request):
-        student_id = request.session.get('student_id')
-        if not student_id:
-            return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
+        student_id = request.data.get('student')  # Get student ID from the dropdown
+        opportunity_id = request.data.get('research_opportunity')  # Get research opportunity ID from the dropdown
+        resume = request.FILES.get('resume')  # Get the uploaded resume
+        status_value = request.data.get('status', 'pending')  # Default to 'pending'
 
-        opportunity_id = request.data.get('research_opportunity')
-        resume_file = request.FILES.get('resume') 
-        if not opportunity_id:
-            return Response({"error": "Research opportunity ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        # Validate student
+        try:
+            student = Student.objects.get(id=student_id)
+        except Student.DoesNotExist:
+            return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        # Validate research opportunity
         try:
             research_opportunity = ResearchOpportunity.objects.get(id=opportunity_id)
         except ResearchOpportunity.DoesNotExist:
             return Response({"error": "Research opportunity not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check if student has already applied
-        if Student_Application.objects.filter(student_id=student_id, research_opportunity=research_opportunity).exists():
-            return Response({"error": "You have already applied for this research opportunity."}, status=status.HTTP_400_BAD_REQUEST)
-
-        
         # Validate resume upload
-        if not resume_file:
+        if not resume:
             return Response({"error": "Resume upload is required to apply."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Save the uploaded resume temporarily
-        student = Student.objects.get(id=student_id)
-        application = Student_Application.objects.create(
+
+        # Save the application with the uploaded resume
+        application = StudentApplication.objects.create(
             student=student,
             research_opportunity=research_opportunity,
-            resume=resume_file
+            resume=resume,
+            status=status_value,
         )
-        # Analyze the resume
-        resume_path = application.resume.path
-        required_keywords = research_opportunity.required_skills.split(",")  # Assuming skills are comma-separated
-        score = ResumeAnalyzer.analyze_resume(resume_path, required_keywords)
+
+        try:
+            # Debug: Log the resume path
+            resume_path = application.resume.path
+            print(f"DEBUG: Resume Path -> {resume_path}")
+
+            # Fetch required keywords
+            required_keywords = research_opportunity.required_skills.split(",")
+            if not required_keywords or not any(required_keywords):
+                raise ValueError("The research opportunity has no required skills defined.")
+
+            # Analyze the resume
+            score = ResumeAnalyzer.analyze_resume(resume_path, required_keywords)
+            # required_keywords = research_opportunity.required_skills.split(",")
+
+        except ValueError as e:
+            application.delete()  # Cleanup invalid applications
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validate the score threshold
         threshold = 70  # Example threshold
         if score < threshold:
-            application.delete()  # Cleanup if the resume doesn't meet the threshold
-            return Response({"error": f"Resume score too low ({score:.2f}%). Minimum required: {threshold}%."}, status=status.HTTP_400_BAD_REQUEST)
+            application.delete()  # Cleanup invalid applications
+            return Response({"Message": f"Resume score too low ({score:.2f}%). Minimum required: {threshold}%."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Save the score to the application
         application.resume_score = score
@@ -386,5 +420,25 @@ class ApplyResearchOpportunityView(APIView):
         return Response({
             "message": "Application submitted successfully",
             "application_id": application.id,
-            "score": score
+            "score": f"{score:.2f}%",
+            "required_keywords": required_keywords, 
         }, status=status.HTTP_201_CREATED)
+
+        
+class StudentApplicationView(viewsets.ModelViewSet):
+    # research_opportunities = ResearchOpportunity.objects.filter(is_active=True)
+    # research_serializer = ResearchOpportunityStudentSerializer(research_opportunities, many=True)
+
+    queryset = StudentApplication.objects.all()
+    serializer_class = ApplicationSerializer
+    
+    
+    
+    
+
+
+
+
+
+
+
