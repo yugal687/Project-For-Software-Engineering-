@@ -2,8 +2,8 @@ import numpy as np
 from typing import List, Dict, Tuple
 import os
 import re
-from student_resume_analysis import process_resume
-from job_opportunities_code import process_research_document
+from .student_resume_analysis import process_resume
+from .job_opportunities_code import process_research_document
 
 
 class JobPostingProcessor:
@@ -32,18 +32,17 @@ class JobPostingProcessor:
             ],
         }
 
-    def extract_keywords(self, text_path: str) -> Dict[str, List[str]]:
+    def extract_keywords(self, text: str) -> Dict[str, List[str]]:
         """Extract keywords from text based on predefined categories"""
-        # Use Deepika's function to get keywords
-        keywords = process_research_document(text_path)
+        # For now, just split the text into words
+        keywords = text.lower().split()
         
-        # Categorize keywords as before
+        # Categorize keywords
         found_keywords = {category: [] for category in self.keyword_categories}
-        keywords_str = " ".join(keywords).lower()
 
         for category, category_keywords in self.keyword_categories.items():
             for keyword in category_keywords:
-                if keyword in keywords_str:
+                if keyword in text.lower():
                     found_keywords[category].append(keyword)
 
         return found_keywords
@@ -77,10 +76,14 @@ class ATSScorer:
         return (matches / len(posting_keywords)) * 100 if posting_keywords else 0
 
     def calculate_ats_score(
-        self, resume_keywords: List[str], job_posting_path: str
+        self, resume_text: str, job_posting_text: str
     ) -> Tuple[float, Dict, List[str]]:
         """Calculate ATS score and provide recommendations"""
-        posting_keywords = self.job_processor.extract_keywords(job_posting_path)
+        # Extract keywords from resume
+        resume_keywords = resume_text.lower().split()
+        
+        # Extract keywords from job posting
+        posting_keywords = self.job_processor.extract_keywords(job_posting_text)
 
         scores = {}
         for category, weight in self.weights.items():

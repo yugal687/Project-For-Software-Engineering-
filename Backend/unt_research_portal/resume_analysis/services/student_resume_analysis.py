@@ -5,39 +5,35 @@ import re
 import os
 import nltk
 import numpy as np
+import io
 
 nltk.download('stopwords')
 
-def extract_text_from_pdf(pdf_path):
+def extract_text_from_pdf(file_obj):
     text = ""
-    with open(pdf_path, 'rb') as file:
-        reader = PyPDF2.PdfReader(file)
-        for page in reader.pages:
-            text += page.extract_text()
+    reader = PyPDF2.PdfReader(file_obj)
+    for page in reader.pages:
+        text += page.extract_text()
     return text
 
-def extract_text_from_docx(docx_path):
-    doc = Document(docx_path)
+def extract_text_from_docx(file_obj):
+    doc = Document(file_obj)
     return "\n".join([paragraph.text for paragraph in doc.paragraphs])
-
 
 def clean_text(text):
     text = re.sub(r'\W+', ' ', text)  
     return text
-
 
 def extract_keywords(text):
     rake = Rake() 
     rake.extract_keywords_from_text(text)
     return rake.get_ranked_phrases()[:10]
 
-def process_resume(file_path):
-    file_extension = os.path.splitext(file_path)[1].lower()
-
-    if file_extension == ".pdf":
-        raw_text = extract_text_from_pdf(file_path)
-    elif file_extension == ".docx":
-        raw_text = extract_text_from_docx(file_path)
+def process_resume(file_obj, file_extension):
+    if file_extension.lower() == ".pdf":
+        raw_text = extract_text_from_pdf(file_obj)
+    elif file_extension.lower() == ".docx":
+        raw_text = extract_text_from_docx(file_obj)
     else:
         raise ValueError("Unsupported file type. Use a PDF(.pdf) or Word (.docx) file.")
 
@@ -45,10 +41,3 @@ def process_resume(file_path):
     keywords = extract_keywords(cleaned_text)
 
     return keywords
-
-
-resume_path = "../data/resumes/Sarah_Johnson_Resume.pdf"
-keywords = process_resume(resume_path)
-keywords_array = np.array(keywords)
-print("Extracted Keywords:", keywords_array)
-print(type(keywords_array))
