@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Dashboard from "@/components/staffComponents/Dashboard";
+import Dashboard from "@/components/staffComponents/StaffDashboardLayout";
 
 const page = () => {
   const [data, setData] = useState("");
@@ -19,7 +19,7 @@ const page = () => {
 
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/api/professor/${id}/`,
+          `http://127.0.0.1:8000/api/coi-staff/${id}/`,
           {
             headers: { Authorization: `Token ${token}` }, // Forward the authorization header
           }
@@ -49,13 +49,13 @@ const page = () => {
             <div className="row">
               <div className="col-md-6">
                 <p>
-                  <strong>Name:</strong> {data.first_name}
+                  <strong>Name:</strong> Gaurav Govindwani
                 </p>
                 <p>
-                  <strong>Email:</strong> johndoe@example.com
+                  <strong>Email:</strong> gaurav@example.com
                 </p>
                 <p>
-                  <strong>Major:</strong> Computer Science
+                  <strong>Major:</strong> Data Science
                 </p>
               </div>
               <div className="col-md-6">
@@ -66,7 +66,7 @@ const page = () => {
                   <strong>University:</strong> University of North Texas
                 </p>
                 <p>
-                  <strong>GPA:</strong> 3.8
+                  <strong>GPA:</strong> 4.0
                 </p>
               </div>
             </div>

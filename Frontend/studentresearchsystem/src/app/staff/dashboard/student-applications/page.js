@@ -1,4 +1,4 @@
-import StudentsApplied from "@/components/facultyComponents/StudentsApplication";
+import StudentsApplied from "@/components/staffComponents/StudentsApplication";
 import React from "react";
 
 const page = () => {

@@ -9,6 +9,7 @@ const RegisterProfessor = () => {
     user: 1, // Assuming a default user ID for now
     first_name: "",
     last_name: "",
+    password: "",
     department: "",
     title: "",
     office_location: "",
@@ -94,6 +95,34 @@ const RegisterProfessor = () => {
                       id="last_name"
                       name="last_name"
                       value={formData.last_name}
+                      onChange={handleChange}
+                      required
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">
+                      Email:
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="password" className="form-label">
+                      Password:
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value={formData.password}
                       onChange={handleChange}
                       required
                       className="form-control"

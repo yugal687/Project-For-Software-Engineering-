@@ -44,7 +44,7 @@ const RegisterStudent = () => {
     try {
       // Replace '/api/professors/' with your actual API endpoint
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/professor/",
+        "http://127.0.0.1:8000/api/student/",
         data,
         {
           headers: { "Content-Type": "multipart/form-data" },

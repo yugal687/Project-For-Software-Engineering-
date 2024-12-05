@@ -68,44 +68,42 @@ const FacultyDashboardLayout = ({ children }) => {
                   className={
                     "nav-link " +
                     `${
-                      pathname === "/faculty/dashboard"
-                        ? "active"
-                        : "text-white"
+                      pathname === "/staff/dashboard" ? "active" : "text-white"
                     }`
                   }
-                  href="/faculty/dashboard"
+                  href="/staff/dashboard"
                 >
                   <i className="bi bi-house-door"></i> Dashboard
                 </Link>
               </li>
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link
                   className={
                     "nav-link " +
                     `${
-                      pathname === "/faculty/dashboard/profile"
+                      pathname === "/staff/dashboard/profile"
                         ? "active"
                         : "text-white"
                     }`
                   }
-                  href="/faculty/dashboard/profile"
+                  href="/staff/dashboard/profile"
                 >
                   <i className="bi bi-person"></i> Profile
                 </Link>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <Link
                   className={
                     "nav-link " +
                     `${
-                      pathname === "/faculty/dashboard/student-applications"
+                      pathname === "/staff/dashboard/student-applications"
                         ? "active"
                         : "text-white"
                     }`
                   }
-                  href="/faculty/dashboard/student-applications"
+                  href="/staff/dashboard/student-applications"
                 >
-                  <i className="bi bi-file-earmark-arrow-up"></i> View
+                  <i className="bi bi-file-earmark-arrow-up"></i> View All
                   Applicants
                 </Link>
               </li>
@@ -114,12 +112,12 @@ const FacultyDashboardLayout = ({ children }) => {
                   className={
                     "nav-link " +
                     `${
-                      pathname === "/faculty/dashboard/opportunities"
+                      pathname === "/staff/dashboard/opportunities"
                         ? "active"
                         : "text-white"
                     }`
                   }
-                  href="/faculty/dashboard/opportunities"
+                  href="/staff/dashboard/opportunities"
                 >
                   <i className="bi bi-person"></i> View My Research Posts
                 </Link>
@@ -130,7 +128,7 @@ const FacultyDashboardLayout = ({ children }) => {
                   className={
                     "nav-link " +
                     `${
-                      pathname === "/faculty/dashboard/settings"
+                      pathname === "/staff/dashboard/settings"
                         ? "active"
                         : "text-white"
                     }`
@@ -149,7 +147,7 @@ const FacultyDashboardLayout = ({ children }) => {
           <nav class="navbar navbar-light primary-background p-3 dash-nav">
             <div class="d-flex col-12 col-md-3 col-lg-2 mb-2 mb-lg-0 flex-wrap flex-md-nowrap justify-content-between">
               <a class="navbar-brand text-white fw-bold" href="#">
-                Faculty Dashboard
+                COI Staff Dashboard
               </a>
               <button
                 class="navbar-toggler d-md-none collapsed mb-3"

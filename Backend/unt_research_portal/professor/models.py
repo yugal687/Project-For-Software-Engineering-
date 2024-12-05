@@ -82,6 +82,7 @@ class ResearchOpportunity(models.Model):
     research_tags = models.CharField(max_length=255, null=True, blank=True)  # Tags for the research (comma-separated)
     max_applications = models.IntegerField(default=10)  # Limit the number of applications
     current_applications = models.IntegerField(default=0)  # Track current applications
+    
 
     @property
     def students_applied(self):

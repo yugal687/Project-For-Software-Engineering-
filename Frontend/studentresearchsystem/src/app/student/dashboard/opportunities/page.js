@@ -41,9 +41,9 @@ const page = () => {
 
       if (response.ok) {
         alert("Form submitted successfully");
-        const modalElement = document.getElementById("exampleModal");
-        const modal = new window.bootstrap.Modal(modalElement);
-        modal.hide(); // Close the modal
+        // const modalElement = document.getElementById("exampleModal");
+        // const modal = new window.bootstrap.Modal(modalElement);
+        // modal.hide(); // Close the modal
 
         setFormData({
           student: "",
@@ -156,7 +156,7 @@ const page = () => {
                           <p className="card-text">
                             <i>Posted by: {i.professor_name}</i>
                           </p>
-                          <div className="d-flex">
+                          <div className="d-flex justify-content-between">
                             <button
                               type="button"
                               class="btn btn-success"

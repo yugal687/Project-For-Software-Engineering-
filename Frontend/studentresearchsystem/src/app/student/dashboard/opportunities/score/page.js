@@ -7,10 +7,19 @@ const page = () => {
   const score = localStorage.getItem("user_score");
   return (
     <StudentDashboard>
-      <Flex gap="small" wrap>
-        <Progress size={400} type="dashboard" percent={score} />
-      </Flex>
-      <div>Your Resume matching score with Score is {score}</div>
+      <div className="row py-5">
+        <div className="col-md-12 text-center">
+          <Flex gap="small" wrap>
+            <Progress size={400} type="dashboard" percent={score} />
+          </Flex>
+        </div>
+        <div className="">
+          <h5 className="fw-bold">Recommended Skills:</h5>
+          <div>Deep Learning, CNN, RNN, LLMs, AWS, MLOPS, DEVOPS.</div>
+        </div>
+      </div>
+
+      <div>Your Resume matching score with opportunity is {score}</div>
     </StudentDashboard>
   );
 };

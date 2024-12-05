@@ -21,6 +21,7 @@ class Student(models.Model):
     portfolio_website = models.URLField(null=True, blank=True)  # Personal portfolio link
     github_profile = models.URLField(null=True, blank=True)  # GitHub profile link
     applied_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    
     # created_at = models.DateTimeField(auto_now_add=True, default="")  # Account creation date
     # updated_at = models.DateTimeField(auto_now=True, default="")  # Last profile update
     status = models.CharField(
@@ -52,3 +53,5 @@ class StudentApplication(models.Model):
 
     def __str__(self):
         return f"{self.student.first_name} {self.student.last_name} applied for {self.research_opportunity.title}"
+    
+

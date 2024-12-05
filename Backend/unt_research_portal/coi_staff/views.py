@@ -6,10 +6,16 @@ from .models import COIStaff
 from .serializers import COIStaffSerializer
 from django.contrib.auth.hashers import make_password, check_password
 from django.middleware.csrf import get_token
-
+from rest_framework import viewsets
 
 # Create your views here.
 
+class StaffView(viewsets.ModelViewSet):
+    # authentication_classes = [JWTAuthentication]
+
+
+    queryset = COIStaff.objects.all()
+    serializer_class = COIStaffSerializer
 
 
 class COIStaffLoginView(APIView):
@@ -45,6 +51,7 @@ from django.conf import settings
 
 class COIStaffDashboardView(APIView):
     def get(self, request):
+        
         # Query parameters for filtering
         status_filter = request.query_params.get('status', None)
         opportunity_id = request.query_params.get('opportunity_id', None)

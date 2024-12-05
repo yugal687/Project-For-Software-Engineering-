@@ -16,19 +16,20 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/professor/login/",
+        "http://localhost:8000/api/coi-staff/login/",
         {
           email,
           password,
         }
       );
       // Save the JWT token to local storage
-      localStorage.setItem("access_token", response.data.access);
-      localStorage.setItem("user_id", response.data.id);
+      // localStorage.setItem("access_token", response.data.access);
+      localStorage.setItem("user_id", response.data.staff_id);
+      console.log(response);
 
       //   setData(response.data);
       //   professor_id = response.data.professor_id;
-      const path = "/faculty/dashboard";
+      const path = "/staff/dashboard";
       router.push(path);
 
       //   router.push(`/faculty/dashboard/${response.data && professor_id}`);
