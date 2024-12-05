@@ -52,21 +52,18 @@ const page = () => {
                   <strong>Name:</strong> Gaurav Govindwani
                 </p>
                 <p>
-                  <strong>Email:</strong> gaurav@example.com
+                  <strong>Email:</strong> gaurav@mail.com
                 </p>
                 <p>
-                  <strong>Major:</strong> Data Science
+                  <strong>Position:</strong> COI Staff
                 </p>
               </div>
               <div className="col-md-6">
                 <p>
-                  <strong>Year:</strong> Senior
+                  <strong>Year:</strong> 2024
                 </p>
                 <p>
                   <strong>University:</strong> University of North Texas
-                </p>
-                <p>
-                  <strong>GPA:</strong> 4.0
                 </p>
               </div>
             </div>

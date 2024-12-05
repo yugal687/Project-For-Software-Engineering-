@@ -138,6 +138,36 @@ const FacultyDashboardLayout = ({ children }) => {
                   <i className="bi bi-gear"></i> Settings
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link
+                  className={
+                    "nav-link " +
+                    `${
+                      pathname === "/staff/dashboard/on-boarding"
+                        ? "active"
+                        : "text-white"
+                    }`
+                  }
+                  href="/staff/dashboard/on-boarding"
+                >
+                  <i className="bi bi-gear"></i> On Boarding
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className={
+                    "nav-link " +
+                    `${
+                      pathname === "/staff/dashboard/request-documents"
+                        ? "active"
+                        : "text-white"
+                    }`
+                  }
+                  href="/staff/dashboard/request-documents"
+                >
+                  <i className="bi bi-gear"></i> Request Documents
+                </Link>
+              </li>
             </ul>
           </div>
         </nav>
@@ -177,7 +207,7 @@ const FacultyDashboardLayout = ({ children }) => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Hello {data.first_name} {data.last_name}
+                  Hello Gaurav
                 </button>
                 <ul class="dropdown-menu">
                   <li>
@@ -189,13 +219,9 @@ const FacultyDashboardLayout = ({ children }) => {
                     <a className="dropdown-item" href="#"></a>
                   </li>
                   <li>
-                    <a
-                      onClick={handleLogout}
-                      className="dropdown-item"
-                      href="#"
-                    >
+                    <Link href="/staff/login" className="dropdown-item">
                       Logout
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

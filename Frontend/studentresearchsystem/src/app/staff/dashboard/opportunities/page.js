@@ -1,4 +1,4 @@
-import OpportunitiesCreated from "@/components/facultyComponents/OpportunitiesCreated";
+import OpportunitiesCreated from "@/components/staffComponents/OpportunitiesCreated";
 import React from "react";
 
 const page = () => {

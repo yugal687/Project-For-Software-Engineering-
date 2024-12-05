@@ -184,9 +184,9 @@ const StudentDashboard = ({ children }) => {
                     <a className="dropdown-item" href="#"></a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <Link className="dropdown-item" href="/student/login">
                       Logout
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

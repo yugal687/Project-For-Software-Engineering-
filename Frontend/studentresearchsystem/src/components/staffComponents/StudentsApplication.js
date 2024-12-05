@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import axios from "axios";
-import DashboardLayout from "@/components/facultyComponents/FacultyDashboardLayout";
+import DashboardLayout from "@/components/staffComponents/StaffDashboardLayout";
 
 const StudentsApplication = () => {
   const [data, setData] = useState("");

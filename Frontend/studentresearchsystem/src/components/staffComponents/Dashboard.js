@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Dashboard from "@/components/facultyComponents/FacultyDashboardLayout";
+import Dashboard from "@/components/staffComponents/StaffDashboardLayout";
 import Link from "next/link";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import axios from "axios";
@@ -31,9 +31,6 @@ const page = ({ data }) => {
                 </p>
                 <p>
                   <strong>University:</strong> University of North Texas
-                </p>
-                <p>
-                  <strong>GPA:</strong> 3.8
                 </p>
               </div>
             </div>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import axios from "axios";
-import DashboardLayout from "@/components/facultyComponents/FacultyDashboardLayout";
+import DashboardLayout from "@/components/staffComponents/StaffDashboardLayout";
 
 const OpportunitiesCreated = () => {
   const [data, setData] = useState("");
@@ -43,7 +43,7 @@ const OpportunitiesCreated = () => {
     <DashboardLayout>
       <div>
         <div className="pt-3 pb-2 mb-3 border-bottom px-2">
-          Faculty's Created Opportunities List
+          Created Opportunities List
         </div>
         <Link href="/faculty/dashboard/opportunities/create">
           <button className="btn btn-success">Create Opportunity</button>

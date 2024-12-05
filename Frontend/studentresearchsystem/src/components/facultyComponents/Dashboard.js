@@ -16,24 +16,34 @@ const page = ({ data }) => {
             <div className="row">
               <div className="col-md-6">
                 <p>
-                  <strong>Name:</strong> {data.first_name} {data.last_name}
+                  <strong>Name:</strong> {data.title} {data.first_name}{" "}
+                  {data.last_name}
                 </p>
                 <p>
                   <strong>Email:</strong> {data.email}
                 </p>
                 <p>
-                  <strong>Major:</strong> {data.department}
+                  <strong>Title:</strong> {data.title}
+                </p>
+                <p>
+                  <strong>Office Location:</strong> {data.office_location}
+                </p>
+                <p>
+                  <strong>Phone number:</strong> {data.phone_number}
                 </p>
               </div>
               <div className="col-md-6">
                 <p>
-                  <strong>Year:</strong> Senior
+                  <strong>Year:</strong> 2024
                 </p>
                 <p>
                   <strong>University:</strong> University of North Texas
                 </p>
                 <p>
-                  <strong>GPA:</strong> 3.8
+                  <strong>Research Interests:</strong> {data.research_interests}
+                </p>
+                <p>
+                  <strong>Publications:</strong> {data.publications}
                 </p>
               </div>
             </div>
@@ -41,9 +51,6 @@ const page = ({ data }) => {
         </section>
 
         {/* Resume Upload */}
-        <section className="mb-4">
-          <h4>Posted Research</h4>
-        </section>
       </Dashboard>
     </div>
   );

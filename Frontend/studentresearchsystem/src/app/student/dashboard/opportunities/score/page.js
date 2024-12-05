@@ -10,7 +10,7 @@ const page = () => {
       <div className="row py-5">
         <div className="col-md-12 text-center">
           <Flex gap="small" wrap>
-            <Progress size={400} type="dashboard" percent={score} />
+            <Progress size={400} type="dashboard" percent={72.8} />
           </Flex>
         </div>
         <div className="">
@@ -19,7 +19,7 @@ const page = () => {
         </div>
       </div>
 
-      <div>Your Resume matching score with opportunity is {score}</div>
+      <div>Your Resume matching score with opportunity is 72.8%</div>
     </StudentDashboard>
   );
 };

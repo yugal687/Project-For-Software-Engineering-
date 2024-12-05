@@ -143,6 +143,45 @@ const page = () => {
               Explore and Apply for Research Opportunities
             </h3>
             <div className="row">
+              <div className="col-md-4">
+                <div className="card h-100 mb-3">
+                  <div className="card-body">
+                    <h6 className="card-title">
+                      Title: Internship for Machine Learning
+                    </h6>
+                    <p className="card-text">
+                      Description: This is a machine learning internship.
+                    </p>
+                    <p className="card-text">
+                      <i>Posted by: Alex Graham</i>
+                    </p>
+                    <p className="card-text">
+                      <i>Status: Pending</i>
+                    </p>
+                    <div className="d-flex justify-content-between">
+                      <button
+                        type="button"
+                        class="btn btn-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        onClick={() => handleApplyClick(i.id)}
+                        disabled
+                      >
+                        Applied
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal2"
+                        onClick={() => handleApplyClick(i.id)}
+                      >
+                        Get Score
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
               {data &&
                 data.map((i) => {
                   return (
