@@ -116,7 +116,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import StudentLoginSerializer, StudentSerializer, ResearchOpportunityStudentSerializer
+from .serializers import StudentLoginSerializer, StudentSerializer, ResearchOpportunityStudentSerializer, StudentApplicationSerializer
 from .models import Student, StudentApplication
 from django.middleware.csrf import get_token
 from professor.models import ResearchOpportunity, Student_Application
@@ -431,6 +431,25 @@ class StudentApplicationView(viewsets.ModelViewSet):
 
     queryset = StudentApplication.objects.all()
     serializer_class = ApplicationSerializer
+    
+class UploadDocumentsView(APIView):
+    def post(self, request, application_id):
+        """Allow students to upload required documents."""
+        student_id = request.session.get('student_id')
+        if not student_id:
+            return Response({"error": "Not authenticated. Please log in first."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            application = StudentApplication.objects.get(id=application_id, student_id=student_id)
+        except Student_Application.DoesNotExist:
+            return Response({"error": "Application not found or unauthorized access."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = StudentApplicationSerializer(instance=application, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Documents uploaded successfully."}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
     

@@ -8,7 +8,9 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.middleware.csrf import get_token
 
 from professor.models import ResearchOpportunity, Student_Application
+from students.models import StudentApplication
 from professor.serializers import ResearchOpportunitySerializer, ApplicationSerializer
+from students.serializers import StudentApplicationSerializer
 from .serializers import CoiDocumentsSerializer
 from django.core.mail import send_mail
 from django.conf import settings
@@ -86,64 +88,72 @@ class CSRFTokenView(APIView):
     
     
 
-class ManageDocumentsView(APIView):
-    def get(self, request):
-        """Retrieve documentation status for all accepted applications."""
-        accepted_applications = Student_Application.objects.filter(status="accepted")
-        coi_documents = CoiDocuments.objects.filter(student__in=[app.student for app in accepted_applications])
+# class ManageDocumentsView(APIView):
+#     def get(self, request):
+#         """Retrieve documentation status for all accepted applications."""
+#         accepted_applications = Student_Application.objects.filter(status="accepted")
+#         coi_documents = CoiDocuments.objects.filter(student__in=[app.student for app in accepted_applications])
 
-        serializer = CoiDocumentsSerializer(coi_documents, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+#         serializer = CoiDocumentsSerializer(coi_documents, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request):
-        """Create or update documentation for a student."""
-        serializer = CoiDocumentsSerializer(data=request.data)
-        if serializer.is_valid():
-            # Create or update the document record
-            document, created = CoiDocuments.objects.update_or_create(
-                student_id=serializer.validated_data['student'].id,
-                research_opportunity_id=serializer.validated_data['research_opportunity'].id,
-                defaults=serializer.validated_data
-            )
+#     def post(self, request):
+#         """Create or update documentation for a student."""
+#         serializer = CoiDocumentsSerializer(data=request.data)
+#         if serializer.is_valid():
+#             # Create or update the document record
+#             document, created = CoiDocuments.objects.update_or_create(
+#                 student_id=serializer.validated_data['student'].id,
+#                 research_opportunity_id=serializer.validated_data['research_opportunity'].id,
+#                 defaults=serializer.validated_data
+#             )
             
-        # Send notification if status is 'pending'
-            if serializer.validated_data.get('status') == 'pending':
-                student_email = document.student.email
-                self.send_email_notification(
-                    email=student_email,
-                    student_name=f"{document.student.first_name} {document.student.last_name}",
-                    opportunity_title=document.research_opportunity.title
-                )    
-            return Response({"message": "Documentation updated successfully"}, status=status.HTTP_200_OK)
+#         # Send notification if status is 'pending'
+#             if serializer.validated_data.get('status') == 'pending':
+#                 student_email = document.student.email
+#                 self.send_email_notification(
+#                     email=student_email,
+#                     student_name=f"{document.student.first_name} {document.student.last_name}",
+#                     opportunity_title=document.research_opportunity.title
+#                 )    
+#             return Response({"message": "Documentation updated successfully"}, status=status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-    @staticmethod
-    def send_email_notification(email, student_name, opportunity_title):
-        """Send an email notification to the student."""
-        subject = "Reminder: Submit Required Documents"
-        message = f"""
-        Dear {student_name},
+#     @staticmethod
+#     def send_email_notification(email, student_name, opportunity_title):
+#         """Send an email notification to the student."""
+#         subject = "Reminder: Submit Required Documents"
+#         message = f"""
+#         Dear {student_name},
 
-        This is a reminder to submit your required documents for the research opportunity titled "{opportunity_title}".
+#         This is a reminder to submit your required documents for the research opportunity titled "{opportunity_title}".
 
-        Please ensure you submit the following documents:
-        - Consent Form
-        - Student Identification
-        - Transcript
-        - Recommendation Letters
-        - Non-Disclosure Agreement (NDA)
+#         Please ensure you submit the following documents:
+#         - Consent Form
+#         - Student Identification
+#         - Transcript
+#         - Recommendation Letters
+#         - Non-Disclosure Agreement (NDA)
 
-        You can upload these documents through your student dashboard.
+#         You can upload these documents through your student dashboard.
 
-        Thank you,
-        COI Staff
-        """
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email],
-            fail_silently=False
-        )
+#         Thank you,
+#         COI Staff
+#         """
+#         send_mail(
+#             subject=subject,
+#             message=message,
+#             from_email=settings.DEFAULT_FROM_EMAIL,
+#             recipient_list=[email],
+#             fail_silently=False
+#         )
+
+
+class ViewSubmittedDocumentsView(APIView):
+    def get(self, request):
+        """View all documents submitted for accepted applications."""
+        accepted_applications = StudentApplication.objects.filter(status="accepted")
+        serializer = StudentApplicationSerializer(accepted_applications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

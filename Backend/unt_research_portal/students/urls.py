@@ -1,6 +1,6 @@
 # For session authentication
 from django.urls import path, include
-from .views import StudentLoginView, StudentDashboardView, StudentLogoutView, ApplyResearchOpportunityView, CSRFTokenView
+from .views import StudentLoginView, StudentDashboardView, StudentLogoutView, ApplyResearchOpportunityView, CSRFTokenView, UploadDocumentsView
 from . import views
 from rest_framework.routers import DefaultRouter
 
@@ -33,6 +33,7 @@ urlpatterns = [
     
     path('resume/score/', ApplyResearchOpportunityView.as_view(), name='apply-research-opportunity'),
     path('csrf/', CSRFTokenView.as_view(), name='csrf-token'),
+    path('application/<int:application_id>/upload-documents/', UploadDocumentsView.as_view(), name="upload-documents"),
     path('', include(router.urls)),
     
 ]
