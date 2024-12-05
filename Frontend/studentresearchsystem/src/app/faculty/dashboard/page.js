@@ -65,9 +65,6 @@ const page = () => {
                 <p>
                   <strong>University:</strong> University of North Texas
                 </p>
-                <p>
-                  <strong>GPA:</strong> 3.8
-                </p>
               </div>
             </div>
           </div>
